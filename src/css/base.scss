@@ -1,7 +1,64 @@
 /* This is an example of using Sass, otherwise plain CSS works too*/
-$primary-background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
-;
+// import ()
+$primary-background: white;
+$homepage-background: #CDA2AB;
+
+
+* {
+  font-family: "Times New Roman", Times, serif;
+}
 
 body {
   background: $primary-background;
+}
+
+title {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 5em;
+  padding: 1em;
+}
+
+button {
+  width: 10em;
+  height: 2em;
+}
+
+.homepage {
+  // background-image: url(./images/man-watching-sunset-grand-canyon.jpg);
+  display: flex;
+  justify-content: center;
+  //background-color: aquamarine;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.inputs {
+  font-size: 2em;
+}
+.customer-login {
+  display: flex;
+  background-color: $homepage-background;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 4px solid white;
+  border-radius: 10px;
+  width: 500px;
+  height: 500px;
+}
+
+#welcome-message {
+  font-size: 3em;
+}
+
+.login{
+  margin: 10px;
+  width: 15vh;
+  height: 3vh;
 }

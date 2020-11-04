@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const loader = require('sass-loader');
 
 module.exports = {
   entry: './src/index.js',
@@ -19,6 +20,12 @@ module.exports = {
       {
         test: /\.(png|svg|jpg|gif)$/,
         use: [
+              // {
+              //   loader: resolve-url-loader,
+              //   options: {
+              //     sourceMap: true
+              //   }
+              // },
               {
                 loader: 'file-loader',
                 options: {
