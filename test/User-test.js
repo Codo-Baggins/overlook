@@ -1,27 +1,48 @@
 import chai from 'chai';
 const expect = chai.expect;
 import User from '../src/User';
-// import UserRepo from '../src/User-Repo';
 
 let currentUser;
 let id;
-let 
+let name;
+let previousBookings;
+let futureBookings;
 
 describe('UserRepo', function() {
   beforeEach(() => {
-    currentCustomers = [user1, user2, user3]
-    userData = new UserRepo(currentCustomers);
+    id = 5;
+    name = 'Bob';
+    previousBookings = [{}, {}];
+    futureBookings = [{}, {}, {}];
+    currentUser = new User(id, name, previousBookings, futureBookings);
   });
 
   it('should be a function', function() {
-    expect(UserRepo).to.be.a('function');
+    expect(User).to.be.a('function');
   });
 
-  it('should instantiate the UserRepo class', () => {
-    expect(userData).to.be.an.instanceOf(UserRepo)
-  })
+  it('should instantiate the User class', () => {
+    expect(currentUser).to.be.an.instanceOf(User);
+  });
 
-  it('should be able to take an array of customers', () => {
-    expect(userData.customers).to.deep.equal([user1, user2, user3])
-  })
+  it('should have an id', () => {
+    expect(currentUser.id).to.equal(5);
+  });
+
+  it('should have name', () => {
+    expect(currentUser.name).to.equal('Bob');
+  });
+
+  it('should have previous bookings', () => {
+    expect(currentUser.previousBookings).to.deep.equal([{}, {}]);
+  });
+
+  it('should have future bookings', () => {
+    expect(currentUser.futureBookings).to.deep.equal([{}, {}, {}]);
+  });
+
+  it('should be able to book a room', () => {
+    currentUser.bookRoom({})
+    expect(currentUser.futureBookings).to.deep.equal([{}, {}, {}, {}])
+  });
 })
