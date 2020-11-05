@@ -6,13 +6,13 @@ let userData;
 let currentCustomers;
 let user1, user2, user3;
 
-describe('UserRepo', function() {
+describe('UserRepo', () => {
   beforeEach(() => {
     currentCustomers = [user1, user2, user3]
     userData = new UserRepo(currentCustomers);
   });
 
-  it('should be a function', function() {
+  it('should be a function', () => {
     expect(UserRepo).to.be.a('function');
   });
 

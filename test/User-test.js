@@ -8,7 +8,7 @@ let name;
 let previousBookings;
 let futureBookings;
 
-describe('UserRepo', function() {
+describe('User', () => {
   beforeEach(() => {
     id = 5;
     name = 'Bob';
@@ -17,7 +17,7 @@ describe('UserRepo', function() {
     currentUser = new User(id, name, previousBookings, futureBookings);
   });
 
-  it('should be a function', function() {
+  it('should be a function', () => {
     expect(User).to.be.a('function');
   });
 
