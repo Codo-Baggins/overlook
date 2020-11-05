@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Webpack Starter Kit</title>
+    <title>Overlook</title>
   </head>
   <body>
-    <h1>Webpack Starter Kit</h1>
-
-    <img src="./images/turing-logo.png" alt="turing logo" height="100px" width="100px">
-
+    <h1>Overlook</h1>
+    <main class="homepage">
+      <div class="customer-login tab">
+      <button class="tablinks">Customer Login</button>
+      <button class="tablinks">Manager Login</button>
+        <span id="welcome-message">Welcome! To Overlook</span>
+        <div class="inputs tabcontent">
+          Username:<input class="login" type="text"><br>
+          Password:<input class="login" type="text"><br>
+          <button>Login</button>
+          <br>Forgot Password?
+        </div>
+        <!-- <div id="manager-login" class="inputs tabcontent">
+          Username:<input class="login" type="text"><br>
+          Password:<input class="login" type="text"><br>
+          <button>Login</button>
+          <br>Forgot Password?
+        </div> -->
+      </div>
+      <!-- <img src="./turing-logo.jpg" alt="man watching sunset" height="100px" width="100px"> -->
+    </main>
     <!-- Do not include the index.js or main.bundle.js file here - it is done automatically by the webpack server -->
+    <!-- <script src="./index.js"></script> -->
   </body>
 </html>
