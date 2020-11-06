@@ -7,15 +7,15 @@
     <h1>Overlook</h1>
     <main class="homepage">
       <div class="customer-login tab">
-      <button class="tablinks">Customer Login</button>
-      <button class="tablinks">Manager Login</button>
+      <!-- <button class="tablinks">Customer Login</button>
+      <button class="tablinks">Manager Login</button> -->
         <span id="welcome-message">Welcome! To Overlook</span>
-        <div class="inputs tabcontent">
-          Username:<input class="login" type="text"><br>
-          Password:<input class="login" type="text"><br>
-          <button>Login</button>
-          <br>Forgot Password?
-        </div>
+        <form class="inputs tabcontent">
+          Username:<input class="login username" type="text" required><br>
+          Password:<input class="login password" type="text" required><br>
+          <button type="button" class="login-button">Login</button>
+          <br>
+        </form>
         <!-- <div id="manager-login" class="inputs tabcontent">
           Username:<input class="login" type="text"><br>
           Password:<input class="login" type="text"><br>
