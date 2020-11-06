@@ -6,23 +6,29 @@
   <body>
     <h1>Overlook</h1>
     <main class="homepage">
+      <button id="toggle-view-button">Toggle Views</button>
       <div class="customer-login tab">
       <!-- <button class="tablinks">Customer Login</button>
       <button class="tablinks">Manager Login</button> -->
-        <span id="welcome-message">Welcome! To Overlook</span>
+        <span id="welcome-message">Welcome To Overlook!</span>
         <form class="inputs tabcontent">
-          Username:<input class="login username" type="text" required><br>
-          Password:<input class="login password" type="text" required><br>
-          <button type="button" class="login-button">Login</button>
+          Username:<input class="login username" id="customer-username-input" type="text" required><br>
+          Password:<input class="login password" id="customer-password-input"type="text" required><br>
+          <button type="button" class="user-login-button">Login</button>
           <br>
         </form>
-        <!-- <div id="manager-login" class="inputs tabcontent">
-          Username:<input class="login" type="text"><br>
-          Password:<input class="login" type="text"><br>
-          <button>Login</button>
-          <br>Forgot Password?
-        </div> -->
       </div>
+      <div class="manager-login tab hidden">
+        <!-- <button class="tablinks">Customer Login</button>
+        <button class="tablinks">Manager Login</button> -->
+          <span id="welcome-message">Welcome Management!</span>
+          <form class="inputs tabcontent">
+            Username:<input class="login username" id="manager-username-input" type="text" required><br>
+            Password:<input class="login password" id="manager-password-input" type="text" required><br>
+            <button type="button" class="manager-login-button">Login</button>
+            <br>
+          </form>
+        </div>
       <!-- <img src="./turing-logo.jpg" alt="man watching sunset" height="100px" width="100px"> -->
     </main>
     <!-- Do not include the index.js or main.bundle.js file here - it is done automatically by the webpack server -->

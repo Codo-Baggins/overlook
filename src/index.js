@@ -2,6 +2,7 @@
 // Do not delete or rename this file ********
 
 // An example of how you tell webpack to use a CSS (SCSS) file
+import Bookings from './Bookings';
 import './css/base.scss';
 import Customer from './Customer';
 
@@ -11,23 +12,38 @@ import UserRepo from './User-Repo';
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ QUERY SELECTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-const customerUsername = document.querySelector('.username');
-const userPassword = document.querySelector('.password');
-const loginButton = document.querySelector('.login-button');
+const toggleLoginViewButton = document.querySelector('#toggle-view-button');
+const customerUsername = document.querySelector('#customer-username-input');
+const userPassword = document.querySelector('#customer-password-input');
+const userLoginButton = document.querySelector('.user-login-button');
 
+const managerUsername = document.querySelector('#manager-username-input');
+const managerPassword = document.querySelector('#manager-password-input');
+const managerLoginButton = document.querySelector('.manager-login-button');
+
+const customerLoginView = document.querySelector('.customer-login');
+const managerLoginView = document.querySelector('.manager-login');
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ EVENT LISTENERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 window.addEventListener('load', handleLoad);
 
-loginButton.addEventListener('click', handleLogin);
+toggleLoginViewButton.addEventListener('click', toggleUserLogin);
+
+userLoginButton.addEventListener('click', handleUserLogin);
+managerLoginButton.addEventListener('click', handleManagerLogin);
+
+
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ SCRIPTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //let userRepo = new UserRepo();
 //let userRepo;
+let currentCustomerId;
 
 function handleLoad() {
+    getDate();
     fetchAllCustomers();
+    fetchAllBookings();
 }
 
 function fetchAllCustomers() {
@@ -38,16 +54,38 @@ function fetchAllCustomers() {
     //setTimeout(() => console.log(userRepo), 3000);
 }
 
-function loadAllCustomers(apiData) {
-    global.userRepo = new UserRepo(apiData)
+function fetchAllBookings() {
+    fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings')
+    .then(response => response.json())
+    .then(data => loadAllBookings(data.bookings))
+    .catch(error => console.log(error.message));
+    //setTimeout(() => console.log(userRepo), 3000);
 }
 
-function handleLogin() {
-    if (verifyCustomerUsername() && veryifyPassword()) {
+function loadAllCustomers(customersList) {
+    global.userRepo = new UserRepo(customersList)
+}
+
+function loadAllBookings(bookingsList) {
+    global.bookings = new Bookings(bookingsList);
+}
+
+function handleUserLogin() {
+    if (verifyCustomerUsername() && verifyPassword(userPassword)) {
         loadCustomer();
+        
     } else {
-        displayLoginErrorMessage();
-    }
+        displayLoginErrorMessage(userLoginButton);
+    };
+}
+
+function handleManagerLogin() {
+    if (verifyManagerUsername() && verifyPassword(managerPassword)) {
+        //loadCustomer();
+        console.log("manager login success")
+    } else {
+        displayLoginErrorMessage(managerLoginButton);
+    };
 }
 
 function verifyCustomerUsername() {
@@ -57,21 +95,55 @@ function verifyCustomerUsername() {
     return customer;
 }
 
-function veryifyPassword() {
-    return userPassword.value === 'overlook2020';
+function verifyManagerUsername() {
+    return managerUsername.value === 'manager';
+}
+
+function verifyPassword(inputLocation) {
+    return inputLocation.value === 'overlook2020';
 }
 
 function loadCustomer() {
-    const currentCustomerId = verifyCustomerUsername().id;
+    currentCustomerId = verifyCustomerUsername().id;
     const currentCustomerName = verifyCustomerUsername().name;
-    // need to get previous and future bookings from user repo here
-    // may need iterate through bookings, and then pass those values in
-    global.currentCustomer = new Customer(currentCustomerId, currentCustomerName);
+    const currentCustomerPastBookings = sortFutureBookings();
+    const currentCustomerFutureBookings = sortPastBookings();
+    global.currentCustomer = new Customer(currentCustomerId, currentCustomerName, currentCustomerPastBookings, currentCustomerFutureBookings);
     console.log(currentCustomer);
 }
 
-function displayLoginErrorMessage() {
-    loginButton.insertAdjacentHTML('afterend', `<br><p id="login-error-message">The username or password you entered is incorrect. Please try again.</p>`);
+function getDate() {
+    global.currentDate = new Date();
+    currentDate = currentDate.toISOString().substring(0, 10).replaceAll('-', '/');
+}
+
+function loadAllCurrentCustomerBookings() {
+    return bookings.bookingsData.filter(booking => {
+        return booking.userID === currentCustomerId;
+    });
+}
+
+function sortFutureBookings() {
+    return loadAllCurrentCustomerBookings().filter(booking => {
+        return booking.date <= currentDate;
+    });
+}
+
+function sortPastBookings() {
+    return loadAllCurrentCustomerBookings().filter(booking => {
+        return booking.date > currentDate;
+    });
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~ DOM ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+function toggleUserLogin() {
+    customerLoginView.classList.toggle('hidden');
+    managerLoginView.classList.toggle('hidden');
+}
+
+function displayLoginErrorMessage(buttonLocation) {
+    buttonLocation.insertAdjacentHTML('afterend', `<br><p id="login-error-message">The username or password you entered is incorrect. Please try again.</p>`);
     setTimeout(() => removeErrorMessage(), 3000)
 }
 
@@ -80,11 +152,13 @@ function removeErrorMessage() {
     loginErrorMessage.innerHTML = "";
 }
 
-
-function loadBookings() {
+function displayUserView() {
     
 }
 
+function toggleLoginPage() {
+    
+}
 
     //Should have a userData class 
     // should have a dataStorage
