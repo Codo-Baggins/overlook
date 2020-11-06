@@ -45,7 +45,6 @@ function loadAllCustomers(apiData) {
 function handleLogin() {
     if (verifyCustomerUsername() && veryifyPassword()) {
         loadCustomer();
-        console.log("hello")
     } else {
         displayLoginErrorMessage();
     }
@@ -67,12 +66,12 @@ function loadCustomer() {
     const currentCustomerName = verifyCustomerUsername().name;
     // need to get previous and future bookings from user repo here
     // may need iterate through bookings, and then pass those values in
-    const currentCustomer = new Customer(currentCustomerId, currentCustomerName);
+    global.currentCustomer = new Customer(currentCustomerId, currentCustomerName);
     console.log(currentCustomer);
 }
 
 function displayLoginErrorMessage() {
-    loginButton.insertAdjacentHTML('afterend', `<br><p id="login-error-message">"The username or password you entered is incorrect. Please try again.</p>`);
+    loginButton.insertAdjacentHTML('afterend', `<br><p id="login-error-message">The username or password you entered is incorrect. Please try again.</p>`);
     setTimeout(() => removeErrorMessage(), 3000)
 }
 
@@ -81,6 +80,10 @@ function removeErrorMessage() {
     loginErrorMessage.innerHTML = "";
 }
 
+
+function loadBookings() {
+    
+}
 
 
     //Should have a userData class 
