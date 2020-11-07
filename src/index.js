@@ -12,6 +12,8 @@ import UserRepo from './User-Repo';
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ QUERY SELECTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+const heading = document.querySelector('.heading');
+
 const toggleLoginViewButton = document.querySelector('#toggle-view-button');
 const customerUsername = document.querySelector('#customer-username-input');
 const userPassword = document.querySelector('#customer-password-input');
@@ -23,6 +25,9 @@ const managerLoginButton = document.querySelector('.manager-login-button');
 
 const customerLoginView = document.querySelector('.customer-login');
 const managerLoginView = document.querySelector('.manager-login');
+
+const homepage = document.querySelector('.homepage');
+const userProfilePage = document.querySelector('.user-profile-page');
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ EVENT LISTENERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 window.addEventListener('load', handleLoad);
@@ -73,7 +78,7 @@ function loadAllBookings(bookingsList) {
 function handleUserLogin() {
     if (verifyCustomerUsername() && verifyPassword(userPassword)) {
         loadCustomer();
-        
+        displayCustomerView();
     } else {
         displayLoginErrorMessage(userLoginButton);
     };
@@ -152,12 +157,43 @@ function removeErrorMessage() {
     loginErrorMessage.innerHTML = "";
 }
 
-function displayUserView() {
-    
+function displayCustomerView() {
+    toggleLoginPage();
+    displayPastCustomerBookings();
+    displayFutureCustomerBookings();
+   // displayTotalSpentByCustomer();
 }
 
 function toggleLoginPage() {
-    
+    heading.classList.toggle('hidden');
+    homepage.classList.toggle('hidden');
+    userProfilePage.classList.toggle('hidden');
+}
+
+function displayPastCustomerBookings() {
+  //const pastBookings = document.querySelector('#past-bookings');
+  const dateSection = document.querySelector('#past-bookings-date-section')
+    currentCustomer.previousBookings.forEach(booking => {
+        let dateBooked = `<p>${booking.date}</p>`;
+        dateSection.insertAdjacentHTML('afterend', dateBooked);
+    });
+}
+
+function displayFutureCustomerBookings() {
+
+}
+
+function displayTotalSpentByCustomer() {
+    currentCustomer.previousBookings.reduce((totalSpent, booking) => {
+        totalSpent += 1;
+        return totalSpent;
+    }, 0)
+}
+
+function getRoomData() {
+    //fetch the room data from api
+    //parse the data and instantiate our room class with it
+    //iterate through the data and display it to the page in the displayPastBookings function
 }
 
     //Should have a userData class 

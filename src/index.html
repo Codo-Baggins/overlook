@@ -4,32 +4,57 @@
     <title>Overlook</title>
   </head>
   <body>
-    <h1>Overlook</h1>
-    <main class="homepage">
-      <button id="toggle-view-button">Toggle Views</button>
-      <div class="customer-login tab">
-      <!-- <button class="tablinks">Customer Login</button>
-      <button class="tablinks">Manager Login</button> -->
-        <span id="welcome-message">Welcome To Overlook!</span>
-        <form class="inputs tabcontent">
-          Username:<input class="login username" id="customer-username-input" type="text" required><br>
-          Password:<input class="login password" id="customer-password-input"type="text" required><br>
-          <button type="button" class="user-login-button">Login</button>
-          <br>
-        </form>
-      </div>
-      <div class="manager-login tab hidden">
+    <h1 class="heading">Overlook</h1>
+    <main>
+      <section class='homepage'>
+        <button id="toggle-view-button">Toggle Views</button>
+        <div class="customer-login tab">
         <!-- <button class="tablinks">Customer Login</button>
         <button class="tablinks">Manager Login</button> -->
-          <span id="welcome-message">Welcome Management!</span>
+          <span id="welcome-message">Welcome To Overlook!</span>
           <form class="inputs tabcontent">
-            Username:<input class="login username" id="manager-username-input" type="text" required><br>
-            Password:<input class="login password" id="manager-password-input" type="text" required><br>
-            <button type="button" class="manager-login-button">Login</button>
+            Username:<input class="login username" id="customer-username-input" type="text" required><br>
+            Password:<input class="login password" id="customer-password-input"type="text" required><br>
+            <button type="button" class="user-login-button">Login</button>
             <br>
           </form>
         </div>
-      <!-- <img src="./turing-logo.jpg" alt="man watching sunset" height="100px" width="100px"> -->
+        <div class="manager-login tab hidden">
+          <!-- <button class="tablinks">Customer Login</button>
+          <button class="tablinks">Manager Login</button> -->
+            <span id="welcome-message">Welcome Management!</span>
+            <form class="inputs tabcontent">
+              Username:<input class="login username" id="manager-username-input" type="text" required><br>
+              Password:<input class="login password" id="manager-password-input" type="text" required><br>
+              <button type="button" class="manager-login-button">Login</button>
+              <br>
+            </form>
+          </div>
+        <img src="./images/turing-logo.png" alt="man watching sunset" height="100px" width="100px">
+      </section>
+      <section class="user-profile-page hidden">
+        <section class="side-bar">
+          <img src="./images/turing-logo.png" alt="grey photo of gray silhouette" height="100px" width="100px" class="sidebar-profile-pic">
+        </section>
+        <section class="user-card" id="past-bookings">
+          <p id="past-bookings-date-section">Previous Bookings</p>
+          <p>Room Number</p>
+          <p>Room Type</p>
+          <p>Bed Size</p>
+          <p>Number Of Beds</p>
+          <p>Cost Per Night</p>
+          <p>Bidet Included?</p>
+        </section>
+        <section class="user-card hidden" id="future-bookings">
+          Upcoming Bookings
+        </section>
+        <section class="header-info" id="total-spent">
+          money
+        </section>
+      </section>
+      <section id="manager-profile-page hidden">
+        
+      </section>
     </main>
     <!-- Do not include the index.js or main.bundle.js file here - it is done automatically by the webpack server -->
     <!-- <script src="./index.js"></script> -->
