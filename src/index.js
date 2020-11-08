@@ -30,6 +30,11 @@ const managerLoginView = document.querySelector('.manager-login');
 
 const homepage = document.querySelector('.homepage');
 const userProfilePage = document.querySelector('.user-profile-page');
+const previousBookingsSection = document.querySelector('#previous-bookings');
+const futureBookingsSection = document.querySelector('#future-bookings');
+
+const upcomingBookingsButton = document.querySelector('#upcoming-bookings-button');
+const pastBookingsButton = document.querySelector('#past-bookings-button');
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ EVENT LISTENERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 window.addEventListener('load', handleLoad);
@@ -39,6 +44,8 @@ toggleLoginViewButton.addEventListener('click', toggleUserLogin);
 userLoginButton.addEventListener('click', handleUserLogin);
 managerLoginButton.addEventListener('click', handleManagerLogin);
 
+upcomingBookingsButton.addEventListener('click', showUpcomingBookings);
+pastBookingsButton.addEventListener('click', showPastBookings);
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ SCRIPTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,7 +170,7 @@ function removeErrorMessage() {
 function displayCustomerView() {
     toggleLoginPage();
     displayPastCustomerBookings();
-    displayFutureCustomerBookings();
+    displayUpcomingCustomerBookings();
     displayTotalSpentByCustomer();
 }
 
@@ -174,14 +181,12 @@ function toggleLoginPage() {
 }
 
 function displayPastCustomerBookings() {
-  //const pastBookings = document.querySelector('#past-bookings');
     const dateSection = document.querySelector('#past-bookings-date');
     currentCustomer.previousBookings.forEach(booking => {
         let dateBooked = `<p>${booking.date}</p>`;
         dateSection.insertAdjacentHTML('beforeend', dateBooked);
     });
 
-    const roomNumberSection = document.querySelector('room-number');
     currentCustomer.previousBookings.forEach(booking => {
         const previousStay = allRooms.roomData.rooms.find(room => {
             return room.number === booking.roomNumber;
@@ -192,19 +197,13 @@ function displayPastCustomerBookings() {
         const bedQuantity = previousStay.numBeds;
         const roomCost = previousStay.costPerNight;
         const bidetBoolean = previousStay.bidet ? 'Included': 'Not Included'
-            // if (previousStay.bidet === true) {
-            //     return 'Included'
-            // } else {
-            //     return 'Not Included'
-            // };
-        
 
-        const roomNumberSection = document.querySelector('#room-number');
-        const roomTypeSection = document.querySelector('#room-type');
-        const bedSizeSection = document.querySelector('#bed-size');
-        const bedCountSection = document.querySelector('#bed-count');
-        const roomCostSection = document.querySelector('#cost-per-night');
-        const bidetSection = document.querySelector('#bidet');
+        const roomNumberSection = document.querySelector('#past-room-number');
+        const roomTypeSection = document.querySelector('#past-room-type');
+        const bedSizeSection = document.querySelector('#past-bed-size');
+        const bedCountSection = document.querySelector('#past-bed-count');
+        const roomCostSection = document.querySelector('#past-cost-per-night');
+        const bidetSection = document.querySelector('#past-bidet');
 
         roomNumberSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${roomNumber}</li>`);
         roomTypeSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${roomType}</li>`);
@@ -212,12 +211,40 @@ function displayPastCustomerBookings() {
         bedCountSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bedQuantity}</li>`);
         roomCostSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">$${roomCost}</li>`);
         bidetSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bidetBoolean}</li>`);
-
     })
 }
-
-function displayFutureCustomerBookings() {
-
+function displayUpcomingCustomerBookings() {
+      const dateSection = document.querySelector('#future-bookings-date');
+      currentCustomer.futureBookings.forEach(booking => {
+          let dateBooked = `<p>${booking.date}</p>`;
+          dateSection.insertAdjacentHTML('beforeend', dateBooked);
+      });
+  
+      currentCustomer.futureBookings.forEach(booking => {
+          const upcomingStay = allRooms.roomData.rooms.find(room => {
+              return room.number === booking.roomNumber;
+          })
+          const roomNumber = upcomingStay.number;
+          const roomType = upcomingStay.roomType;
+          const bedSize = upcomingStay.bedSize;
+          const bedQuantity = upcomingStay.numBeds;
+          const roomCost = upcomingStay.costPerNight;
+          const bidetBoolean = upcomingStay.bidet ? 'Included': 'Not Included'
+  
+          const roomNumberSection = document.querySelector('#future-room-number');
+          const roomTypeSection = document.querySelector('#future-room-type');
+          const bedSizeSection = document.querySelector('#future-bed-size');
+          const bedCountSection = document.querySelector('#future-bed-count');
+          const roomCostSection = document.querySelector('#future-cost-per-night');
+          const bidetSection = document.querySelector('#future-bidet');
+  
+          roomNumberSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${roomNumber}</li>`);
+          roomTypeSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${roomType}</li>`);
+          bedSizeSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bedSize}</li>`);
+          bedCountSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bedQuantity}</li>`);
+          roomCostSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">$${roomCost}</li>`);
+          bidetSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bidetBoolean}</li>`);
+      })
 }
 
 function displayTotalSpentByCustomer() {
@@ -254,6 +281,19 @@ function loadAllRoomData(allRoomData) {
     console.log(allRooms)
 }
 
+function showUpcomingBookings() {
+    upcomingBookingsButton.classList.add('selected');
+    pastBookingsButton.classList.remove('selected');
+    futureBookingsSection.classList.remove('hidden');
+    previousBookingsSection.classList.add('hidden');
+}
+
+function showPastBookings() {
+    upcomingBookingsButton.classList.remove('selected');
+    pastBookingsButton.classList.add('selected');
+    futureBookingsSection.classList.add('hidden');
+    previousBookingsSection.classList.remove('hidden');
+}
     //Should have a userData class 
     // should have a dataStorage
     // should be able to load users api data to dataStorage ***

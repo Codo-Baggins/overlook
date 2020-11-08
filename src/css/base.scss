@@ -105,9 +105,9 @@ button {
   // flex-direction: row;
   // justify-content: space-between;
   // align-content: center;
-  margin-top: 4em;
+  margin-top: 6em;
   width: 255em;
-  height: 250px;
+  height: 55vh;
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
@@ -124,7 +124,23 @@ button {
   //margin: .5em;
 }
 
+#upcoming-bookings {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1em;
+  //margin: .5em;
+}
+
 .past-info {
+  display: flex;
+  flex-direction: column;
+  //align-content: center;
+  align-items: center;
+  // margin-bottom: 4em;
+}
+
+.future-info {
   display: flex;
   flex-direction: column;
   //align-content: center;
@@ -141,3 +157,18 @@ ul {
   display: none;
 }
 
+#upcoming-bookings-button {
+  border:none;
+  width: 15em;
+  height: 4em;
+}
+
+#past-bookings-button {
+  border:none;
+  width: 15em;
+  height: 4em;
+}
+
+.selected {
+  background-color: rgb(199, 192, 192);
+}
