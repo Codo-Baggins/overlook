@@ -26,6 +26,11 @@ h1 {
   padding: 1em;
 }
 
+h2 {
+  display: flex;
+  justify-content: center;
+}
+
 button {
   width: 10em;
   height: 2em;
@@ -101,7 +106,7 @@ button {
   // justify-content: space-between;
   // align-content: center;
   margin-top: 4em;
-  width: 200px;
+  width: 255em;
   height: 250px;
   overflow: hidden;
   border: 1px solid #ccc;
@@ -111,6 +116,28 @@ button {
   overflow: scroll;
 }
 
+#past-bookings {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1em;
+  //margin: .5em;
+}
+
+.past-info {
+  display: flex;
+  flex-direction: column;
+  //align-content: center;
+  align-items: center;
+  // margin-bottom: 4em;
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 .hidden {
   display: none;
 }
+

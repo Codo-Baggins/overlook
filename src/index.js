@@ -7,7 +7,9 @@ import './css/base.scss';
 import Customer from './Customer';
 
 // An example of how you tell webpack to use an image (also need to link to it in the index.html)
-import './images/turing-logo.png'
+import './images/turing-logo.png';
+import './images/profile-pic.png';
+import Room from './Room';
 import UserRepo from './User-Repo';
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ QUERY SELECTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,6 +51,7 @@ function handleLoad() {
     getDate();
     fetchAllCustomers();
     fetchAllBookings();
+    fetchRoomData();
 }
 
 function fetchAllCustomers() {
@@ -161,7 +164,7 @@ function displayCustomerView() {
     toggleLoginPage();
     displayPastCustomerBookings();
     displayFutureCustomerBookings();
-   // displayTotalSpentByCustomer();
+    displayTotalSpentByCustomer();
 }
 
 function toggleLoginPage() {
@@ -172,11 +175,45 @@ function toggleLoginPage() {
 
 function displayPastCustomerBookings() {
   //const pastBookings = document.querySelector('#past-bookings');
-  const dateSection = document.querySelector('#past-bookings-date-section')
+    const dateSection = document.querySelector('#past-bookings-date');
     currentCustomer.previousBookings.forEach(booking => {
         let dateBooked = `<p>${booking.date}</p>`;
-        dateSection.insertAdjacentHTML('afterend', dateBooked);
+        dateSection.insertAdjacentHTML('beforeend', dateBooked);
     });
+
+    const roomNumberSection = document.querySelector('room-number');
+    currentCustomer.previousBookings.forEach(booking => {
+        const previousStay = allRooms.roomData.rooms.find(room => {
+            return room.number === booking.roomNumber;
+        })
+        const roomNumber = previousStay.number;
+        const roomType = previousStay.roomType;
+        const bedSize = previousStay.bedSize;
+        const bedQuantity = previousStay.numBeds;
+        const roomCost = previousStay.costPerNight;
+        const bidetBoolean = previousStay.bidet ? 'Included': 'Not Included'
+            // if (previousStay.bidet === true) {
+            //     return 'Included'
+            // } else {
+            //     return 'Not Included'
+            // };
+        
+
+        const roomNumberSection = document.querySelector('#room-number');
+        const roomTypeSection = document.querySelector('#room-type');
+        const bedSizeSection = document.querySelector('#bed-size');
+        const bedCountSection = document.querySelector('#bed-count');
+        const roomCostSection = document.querySelector('#cost-per-night');
+        const bidetSection = document.querySelector('#bidet');
+
+        roomNumberSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${roomNumber}</li>`);
+        roomTypeSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${roomType}</li>`);
+        bedSizeSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bedSize}</li>`);
+        bedCountSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bedQuantity}</li>`);
+        roomCostSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">$${roomCost}</li>`);
+        bidetSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bidetBoolean}</li>`);
+
+    })
 }
 
 function displayFutureCustomerBookings() {
@@ -184,16 +221,37 @@ function displayFutureCustomerBookings() {
 }
 
 function displayTotalSpentByCustomer() {
-    currentCustomer.previousBookings.reduce((totalSpent, booking) => {
-        totalSpent += 1;
-        return totalSpent;
+    // currentCustomer.previousBookings.reduce((totalSpent, booking) => {
+    //     totalSpent += booking.;
+    //     return totalSpent;
+    // }, 0)
+    const totalSpentByCustomer = allRooms.roomData.rooms.reduce((totalSpent, room) => {
+        currentCustomer.previousBookings.forEach(booking => {
+            if (room.number === booking.roomNumber) {
+                totalSpent += room.costPerNight;
+            }
+        })
+      return Math.round(totalSpent);  
     }, 0)
+
+    const totalSpendingSection = document.querySelector('#total-spent');
+    totalSpendingSection.innerHTML = `Your Total Spending is $${totalSpentByCustomer}`;
 }
 
-function getRoomData() {
+function fetchRoomData() {
     //fetch the room data from api
     //parse the data and instantiate our room class with it
     //iterate through the data and display it to the page in the displayPastBookings function
+
+    fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/rooms/rooms')
+    .then(response => response.json())
+    .then(data => loadAllRoomData(data))
+    .catch(error => console.log(error.message));
+}
+
+function loadAllRoomData(allRoomData) {
+    global.allRooms = new Room(allRoomData);
+    console.log(allRooms)
 }
 
     //Should have a userData class 
