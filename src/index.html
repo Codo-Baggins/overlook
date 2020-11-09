@@ -38,56 +38,69 @@
         </section>
         <button id="upcoming-bookings-button">Upcoming Bookings</button>
         <button id="past-bookings-button">Past Bookings</button>
-        <section class="user-card hidden" id="previous-bookings">
-          <h2>Your Previous Bookings</h2>
-          <div id="past-bookings">
-            <ul class="past-info" id="past-bookings-date">
-              <p class="edit">Date</p>
-            </ul>
-            <ul class="past-info" id="past-room-number">
-              <p>Room Number</p>
-            </ul>
-            <ul class="past-info" id="past-room-type">
-              <p>Room Type</p>
-            </ul>
-            <ul class="past-info" id="past-bed-size">
-              <p>Bed Size</p>
-            </ul>
-            <ul class="past-info" id="past-bed-count">
-              <p>Number Of Beds</p>
-            </ul>
-            <ul class="past-info" id="past-cost-per-night">
-              <p>Cost Per Night</p>
-            </ul>
-            <ul class="past-info" id="past-bidet">
-              <p>Bidet?</p>
-            </ul>
-          </div>
-        </section>
-        <section class="user-card" id="future-bookings">
-          <h2>Your Upcoming Bookings</h2>
-          <div id="upcoming-bookings">
-            <ul class="future-info" id="future-bookings-date">
-              <p class="edit">Date</p>
-            </ul>
-            <ul class="future-info" id="future-room-number">
-              <p>Room Number</p>
-            </ul>
-            <ul class="future-info" id="future-room-type">
-              <p>Room Type</p>
-            </ul>
-            <ul class="future-info" id="future-bed-size">
-              <p>Bed Size</p>
-            </ul>
-            <ul class="future-info" id="future-bed-count">
-              <p>Number Of Beds</p>
-            </ul>
-            <ul class="future-info" id="future-cost-per-night">
-              <p>Cost Per Night</p>
-            </ul>
-            <ul class="future-info" id="future-bidet">
-              <p>Bidet?</p>
-            </ul>
+        <section class="middle">
+          <section class="user-card hidden" id="previous-bookings">
+            <h2>Your Previous Bookings</h2>
+            <div id="past-bookings">
+              <ul class="past-info" id="past-bookings-date">
+                <p class="edit">Date</p>
+              </ul>
+              <ul class="past-info" id="past-room-number">
+                <p>Room Number</p>
+              </ul>
+              <ul class="past-info" id="past-room-type">
+                <p>Room Type</p>
+              </ul>
+              <ul class="past-info" id="past-bed-size">
+                <p>Bed Size</p>
+              </ul>
+              <ul class="past-info" id="past-bed-count">
+                <p>Number Of Beds</p>
+              </ul>
+              <ul class="past-info" id="past-cost-per-night">
+                <p>Cost Per Night</p>
+              </ul>
+              <ul class="past-info" id="past-bidet">
+                <p>Bidet?</p>
+              </ul>
+            </div>
+          </section>
+          <section class="user-card" id="future-bookings">
+            <h2>Your Upcoming Bookings</h2>
+            <div id="upcoming-bookings">
+              <ul class="future-info" id="future-bookings-date">
+                <p class="edit">Date</p>
+              </ul>
+              <ul class="future-info" id="future-room-number">
+                <p>Room Number</p>
+              </ul>
+              <ul class="future-info" id="future-room-type">
+                <p>Room Type</p>
+              </ul>
+              <ul class="future-info" id="future-bed-size">
+                <p>Bed Size</p>
+              </ul>
+              <ul class="future-info" id="future-bed-count">
+                <p>Number Of Beds</p>
+              </ul>
+              <ul class="future-info" id="future-cost-per-night">
+                <p>Cost Per Night</p>
+              </ul>
+              <ul class="future-info" id="future-bidet">
+                <p>Bidet?</p>
+              </ul>
+          </section>
+          <form class="book-room">
+            <p>Need To Book A Room?</p>
+            <input id="date-picker" type="date" max="2025-12-31">
+            <select type="dropdown"> 
+              <option value="single-room">Single Room</option>
+              <option value="junior-suite">Junior Suite</option>
+              <option value="suite">Suite</option>
+              <option value="residential-suite">Residential Suite</option>
+            </select>
+            <button type="button" id="search-rooms-button">Search For Rooms</button>
+          </form>
         </section>
         <section class="header-info" id="total-spent">
           

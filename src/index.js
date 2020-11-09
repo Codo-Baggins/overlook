@@ -35,6 +35,10 @@ const futureBookingsSection = document.querySelector('#future-bookings');
 
 const upcomingBookingsButton = document.querySelector('#upcoming-bookings-button');
 const pastBookingsButton = document.querySelector('#past-bookings-button');
+
+const dateInput = document.querySelector('#date-picker');
+const searchRoomsButton = document.querySelector('#search-rooms-button');
+    
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ EVENT LISTENERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 window.addEventListener('load', handleLoad);
@@ -47,6 +51,7 @@ managerLoginButton.addEventListener('click', handleManagerLogin);
 upcomingBookingsButton.addEventListener('click', showUpcomingBookings);
 pastBookingsButton.addEventListener('click', showPastBookings);
 
+searchRoomsButton.addEventListener('click', displayAvailableRooms);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ SCRIPTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -83,6 +88,7 @@ function loadAllCustomers(customersList) {
 
 function loadAllBookings(bookingsList) {
     global.bookings = new Bookings(bookingsList);
+    console.log(bookings)
 }
 
 function handleUserLogin() {
@@ -129,7 +135,10 @@ function loadCustomer() {
 
 function getDate() {
     global.currentDate = new Date();
-    currentDate = currentDate.toISOString().substring(0, 10).replaceAll('-', '/');
+    let unformattedDate = currentDate.toISOString().substring(0, 10);
+    currentDate = unformattedDate.replaceAll('-', '/');
+    // this query selector exists twice. may make global?
+    dateInput.setAttribute('min', currentDate);
 }
 
 function loadAllCurrentCustomerBookings() {
@@ -188,7 +197,7 @@ function displayPastCustomerBookings() {
     });
 
     currentCustomer.previousBookings.forEach(booking => {
-        const previousStay = allRooms.roomData.rooms.find(room => {
+        const previousStay = allRooms.roomData.find(room => {
             return room.number === booking.roomNumber;
         })
         const roomNumber = previousStay.number;
@@ -221,7 +230,7 @@ function displayUpcomingCustomerBookings() {
       });
   
       currentCustomer.futureBookings.forEach(booking => {
-          const upcomingStay = allRooms.roomData.rooms.find(room => {
+          const upcomingStay = allRooms.roomData.find(room => {
               return room.number === booking.roomNumber;
           })
           const roomNumber = upcomingStay.number;
@@ -252,7 +261,7 @@ function displayTotalSpentByCustomer() {
     //     totalSpent += booking.;
     //     return totalSpent;
     // }, 0)
-    const totalSpentByCustomer = allRooms.roomData.rooms.reduce((totalSpent, room) => {
+    const totalSpentByCustomer = allRooms.roomData.reduce((totalSpent, room) => {
         currentCustomer.previousBookings.forEach(booking => {
             if (room.number === booking.roomNumber) {
                 totalSpent += room.costPerNight;
@@ -272,12 +281,13 @@ function fetchRoomData() {
 
     fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/rooms/rooms')
     .then(response => response.json())
-    .then(data => loadAllRoomData(data))
+    .then(data => loadAllRoomData(data.rooms))
     .catch(error => console.log(error.message));
 }
 
 function loadAllRoomData(allRoomData) {
     global.allRooms = new Room(allRoomData);
+    allRooms.sortRoomsByType(); 
     console.log(allRooms)
 }
 
@@ -294,6 +304,37 @@ function showPastBookings() {
     futureBookingsSection.classList.add('hidden');
     previousBookingsSection.classList.remove('hidden');
 }
+
+function searchForRooms(selectedDate, selectedRoomType) {
+    // need to see if selecteddate is equal to the bookingDate
+    const availableRooms = allRooms[selectedRoomType].filter(room => {
+        let bookedRoom = bookings.bookingsData.find(booking => {
+            return booking.date === selectedDate && room.number === booking.roomNumber;
+        });
+
+        if (typeof(bookedRoom) === 'undefined') {
+            return true;
+        } else {
+            return false;
+        }
+    })
+    return availableRooms;
+}
+
+
+
+function displayAvailableRooms() {
+    let formattedDate = dateInput.value.replaceAll('-', '/')
+    console.log(formattedDate)
+    searchForRooms(formattedDate, 'residentialSuites').forEach(availableRoom => {
+        console.log(availableRoom);
+    })
+
+
+}
+
+
+
     //Should have a userData class 
     // should have a dataStorage
     // should be able to load users api data to dataStorage ***
