@@ -37,8 +37,10 @@ const upcomingBookingsButton = document.querySelector('#upcoming-bookings-button
 const pastBookingsButton = document.querySelector('#past-bookings-button');
 
 const dateInput = document.querySelector('#date-picker');
+const roomFilterDropdown = document.querySelector('#room-filter-dropdown');
 const searchRoomsButton = document.querySelector('#search-rooms-button');
-    
+const bookingButton = document.querySelector('#booking-button');
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ EVENT LISTENERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 window.addEventListener('load', handleLoad);
@@ -52,6 +54,7 @@ upcomingBookingsButton.addEventListener('click', showUpcomingBookings);
 pastBookingsButton.addEventListener('click', showPastBookings);
 
 searchRoomsButton.addEventListener('click', displayAvailableRooms);
+bookingButton.addEventListener('click', handleBooking);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ SCRIPTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -167,7 +170,7 @@ function toggleUserLogin() {
 }
 
 function displayLoginErrorMessage(buttonLocation) {
-    buttonLocation.insertAdjacentHTML('afterend', `<br><p id="login-error-message">The username or password you entered is incorrect. Please try again.</p>`);
+    buttonLocation.insertAdjacentHTML('afterend', `<br><p class="error" id="login-error-message">The username or password you entered is incorrect. Please try again.</p>`);
     setTimeout(() => removeErrorMessage(), 3000)
 }
 
@@ -325,20 +328,113 @@ function searchForRooms(selectedDate, selectedRoomType) {
 
 function displayAvailableRooms() {
     let formattedDate = dateInput.value.replaceAll('-', '/')
-    console.log(formattedDate)
-    searchForRooms(formattedDate, 'residentialSuites').forEach(availableRoom => {
-        console.log(availableRoom);
-    })
+    console.log(formattedDate, "formatted date", formattedDate.length)
+    
+    let roomTypeSelection;
+    if (roomFilterDropdown.value === "all-rooms") {
+        roomTypeSelection = 'roomData';
+    } else if (roomFilterDropdown.value === "single-room") {
+        roomTypeSelection = 'singleRooms';
+    } else if (roomFilterDropdown.value === "junior-suite") {
+        roomTypeSelection = 'juniorSuites';
+    } else if (roomFilterDropdown.value === "suite") {
+        roomTypeSelection = 'suites';
+    } else if (roomFilterDropdown.value === "residential-suite") {
+        roomTypeSelection = 'residentialSuites';
+    }
+    // searchForRooms(formattedDate, 'residentialSuites').forEach(availableRoom => {
+        //     availableRoom
+        // })
+        const availableBookingsSection = document.querySelector('#available-bookings-section');
+        availableBookingsSection.classList.remove('hidden');
+        bookingButton.classList.remove('hidden');
+        
+        const selectorSection = document.querySelector('.room-to-select');
+        const roomNumberSection = document.querySelector('#queried-room-number');
+      const roomTypeSection = document.querySelector('#queried-room-type');
+      const bedSizeSection = document.querySelector('#queried-bed-size');
+      const bedCountSection = document.querySelector('#queried-bed-count');
+      const roomCostSection = document.querySelector('#queried-cost-per-night');
+      const bidetSection = document.querySelector('#queried-bidet');
+      
+      selectorSection.innerHTML = '<p class="room-to-select">Select</p>';
+      roomNumberSection.innerHTML = "<p>Room Number</p>";
+      roomTypeSection.innerHTML = "<p>Room Type</p>";
+      bedSizeSection.innerHTML = "<p>Bed Size</p>";
+      bedCountSection.innerHTML = "<p>Number Of Beds</p>";
+      roomCostSection.innerHTML = "<p>Cost Per Night</p>";
+      bidetSection.innerHTML = "<p>Bidet?</p>";
 
+    if (formattedDate.length === 0) {
+        let requiredDateMessage = document.querySelector('#required-date-message');
+        requiredDateMessage.classList.toggle('hidden');
+        setTimeout(() => {requiredDateMessage.classList.toggle('hidden')}, 3000);
+    } else {
+      searchForRooms(formattedDate, roomTypeSelection).forEach(availableRoom => {
+        //   const potentialStay = allRooms.roomData.find(room => {
+        //       return room.number === booking.roomNumber;
+        //   })
+          const roomNumber = availableRoom.number;
+          const roomType = availableRoom.roomType === 'single room' ? availableRoom.roomType.slice(0, 7): availableRoom.roomType;
+          const bedSize = availableRoom.bedSize;
+          const bedQuantity = availableRoom.numBeds;
+          const roomCost = availableRoom.costPerNight;
+          const bidetBoolean = availableRoom.bidet ? 'Included': 'Not Included';
+  
 
+          selectorSection.insertAdjacentHTML('beforeend', `<input type="checkbox" class="selector" id=${roomNumber}><br>`);
+          roomNumberSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${roomNumber}</li>`);
+          roomTypeSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${roomType}</li>`);
+          bedSizeSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bedSize}</li>`);
+          bedCountSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bedQuantity}</li>`);
+          roomCostSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">$${roomCost}</li>`);
+          bidetSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bidetBoolean}</li>`);
+      })
+    }
 }
 
 
+function handleBooking() {
+    //let desiredRooms = [];
+    console.log(currentCustomer.futureBookings);
+    let formattedDate = dateInput.value.replaceAll('-', '/');
 
+    let selectedRooms = Array.from(document.getElementsByClassName('selector'));
+    //console.log(selectedRooms)
+    selectedRooms.forEach(selectedRoom => {
+        //console.log(selectedRoom.id, "selectedRoomID")
+        // let roomToBook = allRooms.roomData.find(room => {
+        //     return room.number == selectedRoom.id;
+        // })
+        //console.log(roomToBook);
+        if (selectedRoom.checked) {
+            let roomToBook = {userID: currentCustomerId, date: formattedDate, roomNumber: parseInt(selectedRoom.id)};
+            currentCustomer.bookRoom(roomToBook);
+            //postBooking(roomToBook);
+            //RE-display future bookings
+        }
+        //console.log(currentCustomer.futureBookings);
+    });
+}
+
+// post booking to api 
+function postBooking(dataToPost) {
+    fetch("https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings", {
+      method: 'POST',
+      headers: {
+  	'Content-Type': 'application/json'
+    },
+      body: JSON.stringify(dataToPost),
+    })
+    .then(response => response.json())
+    .then(message => console.log('booking was posted'))
+    .catch(error => console.log(error.message))
+  }
     //Should have a userData class 
     // should have a dataStorage
     // should be able to load users api data to dataStorage ***
     
+
     // Should have a bookings class
     // Should have a bookingsData property : ARRAY
     // Should be able to load bookingsData ****

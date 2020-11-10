@@ -92,15 +92,43 @@
           </section>
           <form class="book-room">
             <p>Need To Book A Room?</p>
-            <input id="date-picker" type="date" max="2025-12-31">
-            <select type="dropdown"> 
+            <input id="date-picker" type="date" max="2025-12-31" required>
+            <select type="dropdown" id="room-filter-dropdown"> 
+              <option value="all-rooms">All Rooms</option>
               <option value="single-room">Single Room</option>
               <option value="junior-suite">Junior Suite</option>
               <option value="suite">Suite</option>
               <option value="residential-suite">Residential Suite</option>
             </select>
             <button type="button" id="search-rooms-button">Search For Rooms</button>
+            <p class="error hidden" id="required-date-message">You Must Select A Valid Date</p>
           </form>
+          <section class="user-card hidden" id="available-bookings-section">
+            <h2>Available Rooms</h2>
+            <div id="upcoming-bookings">
+              <ul class="booking-info" id="selected-booking">
+                <p class="room-to-select">Select</p>
+              </ul>
+              <ul class="booking-info" id="queried-room-number">
+                <p>Room Number</p>
+              </ul>
+              <ul class="booking-info" id="queried-room-type">
+                <p>Room Type</p>
+              </ul>
+              <ul class="booking-info" id="queried-bed-size">
+                <p>Bed Size</p>
+              </ul>
+              <ul class="booking-info" id="queried-bed-count">
+                <p>Number Of Beds</p>
+              </ul>
+              <ul class="booking-info" id="queried-cost-per-night">
+                <p>Cost Per Night</p>
+              </ul>
+              <ul class="booking-info" id="queried-bidet">
+                <p>Bidet?</p>
+              </ul>
+          </section>
+          <button class="hidden" id="booking-button">Book My Selected Room!</button>
         </section>
         <section class="header-info" id="total-spent">
           

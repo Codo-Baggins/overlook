@@ -6,8 +6,18 @@ class User {
     this.futureBookings = futureBookings || [];
   }
 
-  bookRoom(room) {
-    this.futureBookings.push(room);
+  bookRoom(potentialBooking) {
+    let alreadyBooked = false;
+    this.futureBookings.forEach(booking => {
+      if (booking.roomNumber === potentialBooking.roomNumber && booking.date === potentialBooking.date) {
+        alreadyBooked = true;
+      } 
+    });
+    if (alreadyBooked === true) {
+      console.log("Your room has already been booked");
+    } else {
+      this.futureBookings.push(potentialBooking);
+    }
   }
 }
 
