@@ -105,7 +105,7 @@ function handleUserLogin() {
 
 function handleManagerLogin() {
     if (verifyManagerUsername() && verifyPassword(managerPassword)) {
-        //loadCustomer();
+        displayManagerDashboard();
         console.log("manager login success")
     } else {
         displayLoginErrorMessage(managerLoginButton);
@@ -400,20 +400,21 @@ function handleBooking() {
     let formattedDate = dateInput.value.replaceAll('-', '/');
 
     let selectedRooms = Array.from(document.getElementsByClassName('selector'));
-    //console.log(selectedRooms)
+
+    fetchAllBookings();
     selectedRooms.forEach(selectedRoom => {
-        //console.log(selectedRoom.id, "selectedRoomID")
-        // let roomToBook = allRooms.roomData.find(room => {
-        //     return room.number == selectedRoom.id;
-        // })
-        //console.log(roomToBook);
         if (selectedRoom.checked) {
             let roomToBook = {userID: currentCustomerId, date: formattedDate, roomNumber: parseInt(selectedRoom.id)};
-            currentCustomer.bookRoom(roomToBook);
-            //postBooking(roomToBook);
+            //currentCustomer.bookRoom(roomToBook, bookings.bookingsData);
+            if (currentCustomer.bookRoom(roomToBook, bookings.bookingsData) === false) {
+                postBooking(roomToBook);
+                console.log('i tried to post')
+            } else {
+                console.log("the booking already exists, cant post")
+            }
             //RE-display future bookings
+        
         }
-        //console.log(currentCustomer.futureBookings);
     });
 }
 
@@ -430,6 +431,14 @@ function postBooking(dataToPost) {
     .then(message => console.log('booking was posted'))
     .catch(error => console.log(error.message))
   }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~ Manager Dashboard ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+function displayManagerDashboard() {
+    const managerDashboard = document.querySelector('#manager-profile-page');
+    managerDashboard.classList.toggle('hidden');
+}
+
     //Should have a userData class 
     // should have a dataStorage
     // should be able to load users api data to dataStorage ***
