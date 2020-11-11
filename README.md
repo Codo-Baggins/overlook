@@ -1,105 +1,50 @@
-# Webpack Starter Kit
+# Overlook
 
-## Clone This Repo
+- Contributors: 
+  - Joe Lopez
 
-That's right, _clone_ not fork. You will use this repo multiple times, but you can only fork a repository once. So here is what you need to do to clone the repo and still be able to push changes to your repo:
+## Overview
 
-1. Clone down this repo. Since you don't want to name your project "webpack-starter-kit", you can use an optional argument when you run `git clone` (you replace the `[...]` with the terminal command arguments): `git clone [remote-address] [what you want to name the repo]`
-1. Remove the default remote: `git remote rm origin` (notice that `git remote -v` not gives you back nothing)
-1. Create a new repo on GitHub with the name of `[what you want to name the repo]` to be consistent with naming
-1. Copy the address that you would use to clone down this repo - something like `git@github.com:...`
-1. Add this remote to your cloned down repo: `git remote add origin [address you copied in the previous step]` - do not include the brackets
+- Overlook is an application that allows travelers to book hotel reservations for themselves. Upon login the application gives users a detailed overview of their spending habits along with previous and upcoming hotel reservations that they have.  Managers can also log into the site and view hotel statistics for any given day.  Managers also have the abiltity to search for users and book/delete hotel reservations for that user.  
 
-Now try to commit something and push it up to your new repo. If everything is setup correctly, you should see the changes on GitHub.
+## Getting Started 
 
-## Setup
+1. Fork the repo by clicking the "Fork" button in the top right corner of the page
+2. Clone down your forked repo to your local machine by using the command `git clone [replace this with the SSH key for your repo]` in your terminal
+3. `cd` into the cloned down directory on your local machine 
+4. Run `npm start` in your terminal to boot up a server 
+5. Copy the localHost url link provided by the terminal and paste it into your browser
 
-After one person has gone through the steps of cloning down this repo and editing the remote, everyone should clone down the repo. 
+## How to Navigate
 
-Then install the library dependencies. Run:
+1. Upon loading the page you will be met with a login screen. There are two ways to login here, as a manager or as a customer.  Let's start out by logging in as a customer.  
 
-```bash
-npm install
-```
+2. In the "username" field, type in the word "customer", followed by a number 1-50 (no spaces in between). Then type "overlook2020" into the password field.  Once these fields are filled out, click the "Login" button.  
 
-To verify that it is setup correctly, run `npm start` in your terminal. Go to `http://localhost:8080/` and you should see a page with some `h1` text, Turing logo image and a beautiful gradient background. If that's the case, you're good to go. Enter `control + c` in your terminal to stop the server at any time.
+3. Entering the site you will see a future bookings window. It may be empty for now, as there currently may be no scheduled bookings.  However, we can view all of the past bookings for the customer by clicking the "Past Bookings" button in the top left corner of the page. 
 
-## Where to Add Your Code
+4. Let's go ahead and book a room.  Scroll down to the "Search Rooms" field and select a future date from the date-picker.  Then select a type of room that you wish to stay in.  Once these fields are filled out, you can click the "Search For Rooms" button. 
 
-### JavaScript
+5. A list of available rooms for your chosen criteria will appear in a window below.  You can choose any room for that date or even multiple if you so choose.  Once you have selected the room you would like to book, click the "Book Room" button.
 
-You have to be very intentional with where you add your feature code. This repo uses a tool called [webpack](https://webpack.js.org/) to combine many JavaScript files into one big file. Webpack enables you to have many, separate JavaScript files to keep your code organized and readable. Webpack expects all of your code files to be in a specific place, or else it doesn't know how to combine them all behind the scenes.
+6. Now, lets login as a manager.  Click the "Logout" button in the top right corner of the page.  The button should bring you back to the homescreen. 
 
-**Create all of your feature code files in the `src` directory.**
+7. Click the "Login As Manager" button in the upper-middle section of the page.  In the "username" field, type "manager" and in the password field type "overlook2020"
 
-Since code is separated into multiple files, you need to use the `import` and `export` syntax to share code across file.
+8. Upon logging in, you will see a manager dashboard that provides the statistics for that day including total revenue and number of rooms available. 
 
-Here is a video that walks through some information about [import and export](https://www.youtube.com/watch?v=_3oSWwapPKQ). There are a lot of resources out there about `import` and `export`, and resources will sometimes call them `ES6 modules`. It's something you will see in React and beyond.
+9. Scroll down to the "Search for customer" field and type in the name of a valid customer (Leatha Ullrich is an example you may use). Click the "Search for Customers" button
 
-### HTML
+10. You will then be provided with all of the user's information just as if you were logged in as a customer.  From there, you can view their upcoming bookings and even delete them!  
 
-Add the HTML you need in the `index.html` file in the `./src` directory. There is some boilerplate HTML that exists from the start that you can modify.
+11. In the top left corner of the page, select a date and room number in the "Delete booking" form field that corresponds with a user's upcoming room booking.  Click the "remove booking" button and viola! The booking has been removed from their future bookings.  
 
-### CSS (SCSS/SASS)
+12. You can logout now and log back in as that user and see that the booking will have been removed from their list of upcoming bookings!
 
-This project is setup to use SCSS/SASS files by default instead of your regular CSS files. Add your SCSS files in the `src/css` directory. There is a `base.scss` file already there, but you can change this file and add multiple SCSS files in this directory.
 
-This might sound weird, but you need to `import` your SCSS files in the JavaScript entry file (`index.js`) for the styles to be applied to your HTML. The example `base.scss` file has already been imported in the JavaScript entry file as an example.
+# Future Iterations
 
-### Images
-
-Add your image files in the `src/images` directory. Similar to CSS files, you need to `import` image files in the JavaScript entry file (`index.js`). Then go into the HTML and add an `img` element with the `src` attribute pointing to the `images` directory. There is an example in the `index.html` file for you to see.
-
-## How to View Your Code in Action
-
-In the terminal, run:
-
-```bash
-npm start
-```
-
-You will see a bunch of lines output to your terminal. One of those lines will be something like:
-
-```bash
-Project is running at http://localhost:8080/
-```
-
-Go to `http://localhost:8080/` in your browser to view your code running in the browser.
-
----
-
-## Test Files Organization
-
-Similar to feature code, your test code needs to be put in a specific place for it to run successfully.
-
-**Put all of your test files in the `test` directory.** As a convention, all test filenames should end with `-test.js`. For instance: `box-test.js`.
-
-## Running Your Tests
-
-Run your test suite using the command:
-
-```bash
-npm test
-```
-
-The test results will output to the terminal.
-
----
-
-## Linting Your Code
-
-Run the command in your terminal `npm run lint` to run the linter on your JavaScript code. There will be errors and warnings right from the start in this starter kit - the linter is still running successfully.
-
-Your linter will look at the JavaScript files you have within the `src` directory and the `test` directory. 
-
-## Webpack?
-
-If you look in the `package.json` file, you'll see one of the library dependencies called `webpack`. If you're interested in learning more about what Webpack is and how it works behind the scenes, take a look through the [Webpack configuration documentation](https://webpack.js.org/concepts/).
-
-## Deploying to GitHub Pages
-
-_If you are finished with the functionality and testing of your project_, then you can consider deploying your project to the web! This way anyone can play it without cloning down your repo.
-
-[GitHub Pages](https://pages.github.com/) is a great way to deploy your project to the web. Don't worry about this until your project is free of bugs and well tested!
-
-If you _are_ done, you can follow [this procedure](./gh-pages-procedure.md) to get your project live on GitHub Pages.
+- Create the ability to delete bookings from the bookings API
+- Make "Logout" less buggy for a Manager
+- Change sizing to be dynamic to account for tablets, smartphones, etc. 
+- Clean up SASS and JS (very WET and messy)
