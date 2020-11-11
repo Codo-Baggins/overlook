@@ -1,16 +1,12 @@
-// This is the JavaScript entry file - your code begins here
-// Do not delete or rename this file ********
-
-// An example of how you tell webpack to use a CSS (SCSS) file
 import Bookings from './Bookings';
 import './css/base.scss';
 import Customer from './Customer';
 
-// An example of how you tell webpack to use an image (also need to link to it in the index.html)
 import './images/turing-logo.png';
 import './images/profile-pic.png';
 import Room from './Room';
 import UserRepo from './User-Repo';
+import Manager from './Manager';
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ QUERY SELECTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -33,6 +29,12 @@ const userProfilePage = document.querySelector('.user-profile-page');
 const previousBookingsSection = document.querySelector('#previous-bookings');
 const futureBookingsSection = document.querySelector('#future-bookings');
 
+const managerProfilePage = document.querySelector('.manager-profile-page');
+const managerSideBar = document.querySelector('.manager-side-bar');
+const roomsAvailableToday = document.querySelector('#rooms-available-today');
+const revenueToday = document.querySelector('#revenue-today');
+const roomOccupiedPercentage = document.querySelector('#room-occupied-percentage');
+
 const upcomingBookingsButton = document.querySelector('#upcoming-bookings-button');
 const pastBookingsButton = document.querySelector('#past-bookings-button');
 
@@ -40,6 +42,8 @@ const dateInput = document.querySelector('#date-picker');
 const roomFilterDropdown = document.querySelector('#room-filter-dropdown');
 const searchRoomsButton = document.querySelector('#search-rooms-button');
 const bookingButton = document.querySelector('#booking-button');
+
+const searchCustomerButton = document.querySelector('#search-customer-button');
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ EVENT LISTENERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -56,10 +60,10 @@ pastBookingsButton.addEventListener('click', showPastBookings);
 searchRoomsButton.addEventListener('click', displayAvailableRooms);
 bookingButton.addEventListener('click', handleBooking);
 
+searchCustomerButton.addEventListener('click', handleSearchForCustomer);
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ SCRIPTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//let userRepo = new UserRepo();
-//let userRepo;
 let currentCustomerId;
 
 function handleLoad() {
@@ -74,7 +78,6 @@ function fetchAllCustomers() {
     .then(response => response.json())
     .then(data => loadAllCustomers(data.users))
     .catch(error => console.log(error.message));
-    //setTimeout(() => console.log(userRepo), 3000);
 }
 
 function fetchAllBookings() {
@@ -82,7 +85,6 @@ function fetchAllBookings() {
     .then(response => response.json())
     .then(data => loadAllBookings(data.bookings))
     .catch(error => console.log(error.message));
-    //setTimeout(() => console.log(userRepo), 3000);
 }
 
 function loadAllCustomers(customersList) {
@@ -91,13 +93,13 @@ function loadAllCustomers(customersList) {
 
 function loadAllBookings(bookingsList) {
     global.bookings = new Bookings(bookingsList);
-    console.log(bookings)
 }
 
 function handleUserLogin() {
     if (verifyCustomerUsername() && verifyPassword(userPassword)) {
         loadCustomer();
-        displayCustomerView();
+        displayCustomerView('#past-bookings-date', '#future-bookings-date', '#total-spent' );
+        toggleLoginPage(userProfilePage);
     } else {
         displayLoginErrorMessage(userLoginButton);
     };
@@ -105,8 +107,8 @@ function handleUserLogin() {
 
 function handleManagerLogin() {
     if (verifyManagerUsername() && verifyPassword(managerPassword)) {
-        displayManagerDashboard();
-        console.log("manager login success")
+        global.currentManager = new Manager();
+        displayManagerView();
     } else {
         displayLoginErrorMessage(managerLoginButton);
     };
@@ -130,34 +132,32 @@ function verifyPassword(inputLocation) {
 function loadCustomer() {
     currentCustomerId = verifyCustomerUsername().id;
     const currentCustomerName = verifyCustomerUsername().name;
-    const currentCustomerPastBookings = sortFutureBookings();
-    const currentCustomerFutureBookings = sortPastBookings();
+    const currentCustomerPastBookings = sortFutureBookings(currentCustomerId);
+    const currentCustomerFutureBookings = sortPastBookings(currentCustomerId);
     global.currentCustomer = new Customer(currentCustomerId, currentCustomerName, currentCustomerPastBookings, currentCustomerFutureBookings);
-    console.log(currentCustomer);
 }
 
 function getDate() {
     global.currentDate = new Date();
     let unformattedDate = currentDate.toISOString().substring(0, 10);
     currentDate = unformattedDate.replaceAll('-', '/');
-    // this query selector exists twice. may make global?
     dateInput.setAttribute('min', currentDate);
 }
 
-function loadAllCurrentCustomerBookings() {
+function loadAllCurrentCustomerBookings(customerID) {
     return bookings.bookingsData.filter(booking => {
-        return booking.userID === currentCustomerId;
+        return booking.userID === customerID;
     });
 }
 
-function sortFutureBookings() {
-    return loadAllCurrentCustomerBookings().filter(booking => {
+function sortFutureBookings(customerID) {
+    return loadAllCurrentCustomerBookings(customerID).filter(booking => {
         return booking.date <= currentDate;
     });
 }
 
-function sortPastBookings() {
-    return loadAllCurrentCustomerBookings().filter(booking => {
+function sortPastBookings(customerID) {
+    return loadAllCurrentCustomerBookings(customerID).filter(booking => {
         return booking.date > currentDate;
     });
 }
@@ -165,6 +165,10 @@ function sortPastBookings() {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ DOM ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function toggleUserLogin() {
+    let loginButtonMessageUser = document.querySelector('.login-button-message-user')
+    loginButtonMessageUser.classList.toggle('hidden');
+    let loginButtonMessageManager = document.querySelector('.login-button-message-manager')
+    loginButtonMessageManager.classList.toggle('hidden');
     customerLoginView.classList.toggle('hidden');
     managerLoginView.classList.toggle('hidden');
 }
@@ -179,21 +183,20 @@ function removeErrorMessage() {
     loginErrorMessage.innerHTML = "";
 }
 
-function displayCustomerView() {
-    toggleLoginPage();
-    displayPastCustomerBookings();
-    displayUpcomingCustomerBookings();
-    displayTotalSpentByCustomer();
+function displayCustomerView(location1, location2, location3) {
+    displayPastCustomerBookings(location1);
+    displayUpcomingCustomerBookings(location2);
+    displayTotalSpentByCustomer(location3);
 }
 
-function toggleLoginPage() {
+function toggleLoginPage(user) {
     heading.classList.toggle('hidden');
     homepage.classList.toggle('hidden');
-    userProfilePage.classList.toggle('hidden');
+    user.classList.toggle('hidden');
 }
 
-function displayPastCustomerBookings() {
-    const dateSection = document.querySelector('#past-bookings-date');
+function displayPastCustomerBookings(location) {
+    const dateSection = document.querySelector(`${location}`);
     currentCustomer.previousBookings.forEach(booking => {
         let dateBooked = `<p>${booking.date}</p>`;
         dateSection.insertAdjacentHTML('beforeend', dateBooked);
@@ -225,8 +228,8 @@ function displayPastCustomerBookings() {
         bidetSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bidetBoolean}</li>`);
     })
 }
-function displayUpcomingCustomerBookings() {
-      const dateSection = document.querySelector('#future-bookings-date');
+function displayUpcomingCustomerBookings(location) {
+      const dateSection = document.querySelector(`${location}`);
       currentCustomer.futureBookings.forEach(booking => {
           let dateBooked = `<p>${booking.date}</p>`;
           dateSection.insertAdjacentHTML('beforeend', dateBooked);
@@ -259,11 +262,7 @@ function displayUpcomingCustomerBookings() {
       })
 }
 
-function displayTotalSpentByCustomer() {
-    // currentCustomer.previousBookings.reduce((totalSpent, booking) => {
-    //     totalSpent += booking.;
-    //     return totalSpent;
-    // }, 0)
+function displayTotalSpentByCustomer(location) {
     const totalSpentByCustomer = allRooms.roomData.reduce((totalSpent, room) => {
         currentCustomer.previousBookings.forEach(booking => {
             if (room.number === booking.roomNumber) {
@@ -273,15 +272,11 @@ function displayTotalSpentByCustomer() {
       return Math.round(totalSpent);  
     }, 0)
 
-    const totalSpendingSection = document.querySelector('#total-spent');
+    const totalSpendingSection = document.querySelector(`${location}`);
     totalSpendingSection.innerHTML = `Your Total Spending is $${totalSpentByCustomer}`;
 }
 
 function fetchRoomData() {
-    //fetch the room data from api
-    //parse the data and instantiate our room class with it
-    //iterate through the data and display it to the page in the displayPastBookings function
-
     fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/rooms/rooms')
     .then(response => response.json())
     .then(data => loadAllRoomData(data.rooms))
@@ -291,7 +286,6 @@ function fetchRoomData() {
 function loadAllRoomData(allRoomData) {
     global.allRooms = new Room(allRoomData);
     allRooms.sortRoomsByType(); 
-    console.log(allRooms)
 }
 
 function showUpcomingBookings() {
@@ -309,7 +303,6 @@ function showPastBookings() {
 }
 
 function searchForRooms(selectedDate, selectedRoomType) {
-    // need to see if selecteddate is equal to the bookingDate
     const availableRooms = allRooms[selectedRoomType].filter(room => {
         let bookedRoom = bookings.bookingsData.find(booking => {
             return booking.date === selectedDate && room.number === booking.roomNumber;
@@ -328,8 +321,6 @@ function searchForRooms(selectedDate, selectedRoomType) {
 
 function displayAvailableRooms() {
     let formattedDate = dateInput.value.replaceAll('-', '/')
-    console.log(formattedDate, "formatted date", formattedDate.length)
-    
     let roomTypeSelection;
     if (roomFilterDropdown.value === "all-rooms") {
         roomTypeSelection = 'roomData';
@@ -342,28 +333,26 @@ function displayAvailableRooms() {
     } else if (roomFilterDropdown.value === "residential-suite") {
         roomTypeSelection = 'residentialSuites';
     }
-    // searchForRooms(formattedDate, 'residentialSuites').forEach(availableRoom => {
-        //     availableRoom
-        // })
-        const availableBookingsSection = document.querySelector('#available-bookings-section');
-        availableBookingsSection.classList.remove('hidden');
-        bookingButton.classList.remove('hidden');
+   
+    const availableBookingsSection = document.querySelector('#available-bookings-section');
+    availableBookingsSection.classList.remove('hidden');
+    bookingButton.classList.remove('hidden');
         
-        const selectorSection = document.querySelector('.room-to-select');
-        const roomNumberSection = document.querySelector('#queried-room-number');
-      const roomTypeSection = document.querySelector('#queried-room-type');
-      const bedSizeSection = document.querySelector('#queried-bed-size');
-      const bedCountSection = document.querySelector('#queried-bed-count');
-      const roomCostSection = document.querySelector('#queried-cost-per-night');
-      const bidetSection = document.querySelector('#queried-bidet');
+    const selectorSection = document.querySelector('.room-to-select');
+    const roomNumberSection = document.querySelector('#queried-room-number');
+    const roomTypeSection = document.querySelector('#queried-room-type');
+    const bedSizeSection = document.querySelector('#queried-bed-size');
+    const bedCountSection = document.querySelector('#queried-bed-count');
+    const roomCostSection = document.querySelector('#queried-cost-per-night');
+    const bidetSection = document.querySelector('#queried-bidet');
       
-      selectorSection.innerHTML = '<p class="room-to-select">Select</p>';
-      roomNumberSection.innerHTML = "<p>Room Number</p>";
-      roomTypeSection.innerHTML = "<p>Room Type</p>";
-      bedSizeSection.innerHTML = "<p>Bed Size</p>";
-      bedCountSection.innerHTML = "<p>Number Of Beds</p>";
-      roomCostSection.innerHTML = "<p>Cost Per Night</p>";
-      bidetSection.innerHTML = "<p>Bidet?</p>";
+    selectorSection.innerHTML = '<p class="room-to-select">Select</p>';
+    roomNumberSection.innerHTML = "<p>Room Number</p>";
+    roomTypeSection.innerHTML = "<p>Room Type</p>";
+    bedSizeSection.innerHTML = "<p>Bed Size</p>";
+    bedCountSection.innerHTML = "<p>Number Of Beds</p>";
+    roomCostSection.innerHTML = "<p>Cost Per Night</p>";
+    bidetSection.innerHTML = "<p>Bidet?</p>";
 
     if (formattedDate.length === 0) {
         let requiredDateMessage = document.querySelector('#required-date-message');
@@ -371,9 +360,6 @@ function displayAvailableRooms() {
         setTimeout(() => {requiredDateMessage.classList.toggle('hidden')}, 3000);
     } else {
       searchForRooms(formattedDate, roomTypeSelection).forEach(availableRoom => {
-        //   const potentialStay = allRooms.roomData.find(room => {
-        //       return room.number === booking.roomNumber;
-        //   })
           const roomNumber = availableRoom.number;
           const roomType = availableRoom.roomType === 'single room' ? availableRoom.roomType.slice(0, 7): availableRoom.roomType;
           const bedSize = availableRoom.bedSize;
@@ -395,30 +381,26 @@ function displayAvailableRooms() {
 
 
 function handleBooking() {
-    //let desiredRooms = [];
-    console.log(currentCustomer.futureBookings);
     let formattedDate = dateInput.value.replaceAll('-', '/');
-
     let selectedRooms = Array.from(document.getElementsByClassName('selector'));
-
-    fetchAllBookings();
+    if (typeof(currentCustomerId) === "undefined"){
+        currentCustomerId = currentCustomer.id
+    }
     selectedRooms.forEach(selectedRoom => {
         if (selectedRoom.checked) {
             let roomToBook = {userID: currentCustomerId, date: formattedDate, roomNumber: parseInt(selectedRoom.id)};
-            //currentCustomer.bookRoom(roomToBook, bookings.bookingsData);
             if (currentCustomer.bookRoom(roomToBook, bookings.bookingsData) === false) {
                 postBooking(roomToBook);
-                console.log('i tried to post')
+                let bookRoomSuccessMessage = document.querySelector('#book-room-success-message');
+                bookRoomSuccessMessage.classList.toggle('hidden');
+                setTimeout(() => {bookRoomSuccessMessage.classList.toggle('hidden')}, 3000);
             } else {
                 console.log("the booking already exists, cant post")
             }
-            //RE-display future bookings
-        
         }
     });
 }
 
-// post booking to api 
 function postBooking(dataToPost) {
     fetch("https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings", {
       method: 'POST',
@@ -434,38 +416,69 @@ function postBooking(dataToPost) {
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ Manager Dashboard ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function displayManagerDashboard() {
-    const managerDashboard = document.querySelector('#manager-profile-page');
-    managerDashboard.classList.toggle('hidden');
+function displayManagerView() {
+    toggleLoginPage(managerProfilePage);
+    roomsAvailableToday.classList.toggle('hidden');
+    revenueToday.classList.toggle('hidden');
+    roomOccupiedPercentage.classList.toggle('hidden');
+    roomsAvailableToday.innerHTML = `<p>Number Of Rooms Available Today</p><br>${displayRoomsAvailableToday()}`;
+    displayTodaysTotalRevenue();
+    roomOccupiedPercentage.innerHTML = `<p>Percentage Of Rooms Occupied Today</p><br>${displayRoomOccupiedPercentage()}`;
 }
 
-    //Should have a userData class 
-    // should have a dataStorage
-    // should be able to load users api data to dataStorage ***
-    
+function displayRoomsAvailableToday() {
+    let availableRooms = allRooms.roomData.filter(room => {
+        let roomAvailable = true;
+        bookings.bookingsData.forEach(booking => {
+            if (booking.date === currentDate && booking.roomNumber === room.number) {
+                roomAvailable = false;
+            }
+        })
+        return roomAvailable;
+    })
+    return availableRooms.length;
+}
 
-    // Should have a bookings class
-    // Should have a bookingsData property : ARRAY
-    // Should be able to load bookingsData ****
-    
-    
-    
-    //Should have a parent class (User)
-    //  Should be able to match userID 
-    // Should be able to match dates
-    // Should be able to load userData
-    // should be able to book a room 
-    
-    
-    // Should have a customer class
-    // should have an id 
-    // Should be able to log in 
-        // 
-    
-    
-    
-    //Should have a manager class 
-    // should have a username: "manager"
-    // should have a password: overlook2020
-    // should be able to log in 
-    // should be able to search for a user
+function displayTodaysTotalRevenue() {
+    let todaysRevenue = bookings.bookingsData.reduce((totalRevenue, booking) => {
+        allRooms.roomData.forEach(room => {
+            if (currentDate === booking.date) {
+                totalRevenue += room.costPerNight 
+            }
+        })
+        return Math.round(totalRevenue);
+    }, 0);
+    const todaysRevenueSection = document.querySelector('#revenue-today');
+    todaysRevenueSection.innerHTML = `<p>Today's Total Revenue</p><br><br><p>$${todaysRevenue}</p>`;
+}
+
+function displayRoomOccupiedPercentage() {
+    const percentOfOccupiedRooms = (displayRoomsAvailableToday()/ allRooms.roomData.length) * 100;
+    return `<p>${percentOfOccupiedRooms}%</p>`;
+}
+
+function handleSearchForCustomer() {
+    findCustomerByName()
+}
+
+function findCustomerByName() {
+    const customerSearchField = document.querySelector('#customer-search-field');
+    const queriedCustomer = currentManager.searchForCustomer(customerSearchField.value, userRepo.customers)
+    if (typeof(queriedCustomer) === "undefined") {
+        let unidentifiedUserMessage = document.querySelector('#unidentified-user-message');
+        unidentifiedUserMessage.classList.toggle('hidden');
+        setTimeout(() => {unidentifiedUserMessage.classList.toggle('hidden')}, 3000);
+    } else {
+        const queriedCustomerPastBookings = sortPastBookings(queriedCustomer.id);
+        const queriedCustomerFutureBookings = sortFutureBookings(queriedCustomer.id);
+        global.currentCustomer = new Customer(queriedCustomer.id, queriedCustomer.name, queriedCustomerFutureBookings, queriedCustomerPastBookings);
+
+        displayCustomerView('#past-bookings-date', '#future-bookings-date', '#total-spent');
+        const upcomingBookingsTitle = document.querySelector('#upcoming-bookings-title');
+        const previousBookingsTitle = document.querySelector('#previous-bookings-title');
+        upcomingBookingsTitle.innerText = `Upcoming Bookings For ${currentCustomer.name}`;
+        previousBookingsTitle.innerText = `Previous Bookings For ${currentCustomer.name}`;
+        userProfilePage.classList.remove('hidden');
+        managerSideBar.classList.toggle('hidden');
+    }
+}
