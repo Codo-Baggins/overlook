@@ -7,11 +7,12 @@
     <h1 class="heading">Overlook</h1>
     <main>
       <section class='homepage'>
-        <button id="toggle-view-button">Toggle Views</button>
+        <button id="toggle-view-button">
+          <p class="login-button-message-user hidden">Login As User</p>
+          <p class="login-button-message-manager">Login As Manager</p>
+        </button>
         <div class="customer-login tab">
-        <!-- <button class="tablinks">Customer Login</button>
-        <button class="tablinks">Manager Login</button> -->
-          <span id="welcome-message">Welcome To Overlook!</span>
+          <span id="welcome-message">Welcome Customer!</span>
           <form class="inputs tabcontent">
             Username:<input class="login username" id="customer-username-input" type="text" required><br>
             Password:<input class="login password" id="customer-password-input"type="text" required><br>
@@ -30,7 +31,7 @@
               <br>
             </form>
           </div>
-        <img src="./images/turing-logo.png" alt="man watching sunset" height="100px" width="100px">
+        <img src="./images/turing-logo.png" alt="turing-logo" height="100px" width="100px">
       </section>
       <section class="user-profile-page hidden">
         <section class="side-bar">
@@ -40,7 +41,7 @@
         <button id="past-bookings-button">Past Bookings</button>
         <section class="middle">
           <section class="user-card hidden" id="previous-bookings">
-            <h2>Your Previous Bookings</h2>
+            <h2 id="previous-bookings-title">Your Previous Bookings</h2>
             <div id="past-bookings">
               <ul class="past-info" id="past-bookings-date">
                 <p class="edit">Date</p>
@@ -66,7 +67,7 @@
             </div>
           </section>
           <section class="user-card" id="future-bookings">
-            <h2>Your Upcoming Bookings</h2>
+            <h2 id="upcoming-bookings-title">Your Upcoming Bookings</h2>
             <div id="upcoming-bookings">
               <ul class="future-info" id="future-bookings-date">
                 <p class="edit">Date</p>
@@ -128,7 +129,8 @@
                 <p>Bidet?</p>
               </ul>
           </section>
-          <button class="hidden" id="booking-button">Book My Selected Room!</button>
+          <button class="hidden" id="booking-button">Book Selected Room!</button>
+            <p id="book-room-success-message" class="hidden">Congrats! You Successfully Booked A Room!</p>
         </section>
         <section class="header-info" id="total-spent">
           
@@ -138,17 +140,22 @@
         <section class="side-bar manager-side-bar">
           <img src="./images/profile-pic.png" alt="grey photo of gray silhouette" height="150em" width="150em" class="sidebar-profile-pic">
         </section>
-        <section class="middle-manager">
-          <section class="user-card manager-card hidden" id="rooms-available-today">
+          <div id="style">
+          <section class="middle-manager">
+            <section class="user-card manager-card hidden" id="rooms-available-today">
+            </section>
+            <section class="user-card manager-card hidden" id="room-occupied-percentage">
+            </section>
+            <section class="user-card manager-card hidden" id="revenue-today">
+            </section>
           </section>
-          <section class="user-card manager-card hidden" id="room-occupied-percentage">
-          </section>
-          <section class="user-card manager-card hidden" id="revenue-today">
-          </section>
-        </section>
+          <form id="search-customer-form">
+            <input id="customer-search-field" placeholder="Search for customer">
+            <button id="search-customer-button" type="button">Search For Customer</button>
+              <p class="error hidden" id="unidentified-user-message">Customer Not Found. Please Enter A Valid Customer</p>
+          </form>
+          </div>
       </section>
     </main>
-    <!-- Do not include the index.js or main.bundle.js file here - it is done automatically by the webpack server -->
-    <!-- <script src="./index.js"></script> -->
   </body>
 </html>
