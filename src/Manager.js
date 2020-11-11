@@ -8,15 +8,22 @@ class Manager extends User {
   }
 
   searchForCustomer(searchedCustomer, userRepo) {
-    return userRepo.find(user => {
+    const foundCustomer = userRepo.find(user => {
       return searchedCustomer === user.name;
     });
+    if (typeof(foundCustomer) === "undefined") {
+
+    }
+    return foundCustomer
   };
   
   deleteBookedRoom(user, date) {
+    console.log(user.futureBookings)
     user.futureBookings = user.futureBookings.filter(futureBooking => {
       return futureBooking.date !== date;
     });
+    console.log("deleted")
+    console.log(user.futureBookings)
   };
 };
 

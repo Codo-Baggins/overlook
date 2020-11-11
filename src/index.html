@@ -2,8 +2,10 @@
 <html lang="en-US">
   <head>
     <title>Overlook</title>
+    <p>Oh, The Places You'll Go</p>
   </head>
   <body>
+  <!-- <img src="./images/man-watching-sunset-grand-canyon.jpg" alt="turing-logo" height="100%" width="100%"> -->
     <h1 class="heading">Overlook</h1>
     <main>
       <section class='homepage'>
@@ -133,7 +135,7 @@
             <p id="book-room-success-message" class="hidden">Congrats! You Successfully Booked A Room!</p>
         </section>
         <section class="header-info" id="total-spent">
-          
+          <button id="customer-logout-button">Logout</button><br>
         </section>
       </section>
       <section class="manager-profile-page hidden">
@@ -141,6 +143,13 @@
           <img src="./images/profile-pic.png" alt="grey photo of gray silhouette" height="150em" width="150em" class="sidebar-profile-pic">
         </section>
           <div id="style">
+          <p>Remove A Booking</p>
+          <form>
+            <!-- <p>Select A Date And Room Number To Delete A Booking</p> -->
+            <input id="date-to-delete" type="date">
+            <input id="room-number-to-delete" placeholder="Room Number">
+            <button id="delete-booking-button" type="button">Remove Booking</button>
+          </form> 
           <section class="middle-manager">
             <section class="user-card manager-card hidden" id="rooms-available-today">
             </section>
@@ -155,6 +164,7 @@
               <p class="error hidden" id="unidentified-user-message">Customer Not Found. Please Enter A Valid Customer</p>
           </form>
           </div>
+          <button id="manager-logout-button">Logout</button><br>
       </section>
     </main>
   </body>

@@ -2,6 +2,7 @@ import Bookings from './Bookings';
 import './css/base.scss';
 import Customer from './Customer';
 
+import './images/man-watching-sunset-grand-canyon.jpg'
 import './images/turing-logo.png';
 import './images/profile-pic.png';
 import Room from './Room';
@@ -23,6 +24,9 @@ const managerLoginButton = document.querySelector('.manager-login-button');
 
 const customerLoginView = document.querySelector('.customer-login');
 const managerLoginView = document.querySelector('.manager-login');
+const customerLogoutButton = document.querySelector('#customer-logout-button');
+const managerLogoutButton = document.querySelector('#manager-logout-button');
+const customerSideBar = document.querySelector('.side-bar');
 
 const homepage = document.querySelector('.homepage');
 const userProfilePage = document.querySelector('.user-profile-page');
@@ -34,6 +38,7 @@ const managerSideBar = document.querySelector('.manager-side-bar');
 const roomsAvailableToday = document.querySelector('#rooms-available-today');
 const revenueToday = document.querySelector('#revenue-today');
 const roomOccupiedPercentage = document.querySelector('#room-occupied-percentage');
+const deleteBookingButton = document.querySelector('#delete-booking-button');
 
 const upcomingBookingsButton = document.querySelector('#upcoming-bookings-button');
 const pastBookingsButton = document.querySelector('#past-bookings-button');
@@ -62,6 +67,10 @@ bookingButton.addEventListener('click', handleBooking);
 
 searchCustomerButton.addEventListener('click', handleSearchForCustomer);
 
+customerLogoutButton.addEventListener('click', handleCustomerLogout);
+managerLogoutButton.addEventListener('click', handleManagerLogout);
+
+deleteBookingButton.addEventListener('click', handleDeleteBooking);
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ SCRIPTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 let currentCustomerId;
@@ -239,6 +248,10 @@ function displayUpcomingCustomerBookings(location) {
           const upcomingStay = allRooms.roomData.find(room => {
               return room.number === booking.roomNumber;
           })
+
+          if (typeof(upcomingStay) === 'undefined') {
+            return;
+          } else {
           const roomNumber = upcomingStay.number;
           const roomType = upcomingStay.roomType;
           const bedSize = upcomingStay.bedSize;
@@ -259,6 +272,7 @@ function displayUpcomingCustomerBookings(location) {
           bedCountSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bedQuantity}</li>`);
           roomCostSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">$${roomCost}</li>`);
           bidetSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bidetBoolean}</li>`);
+          }
       })
 }
 
@@ -273,7 +287,7 @@ function displayTotalSpentByCustomer(location) {
     }, 0)
 
     const totalSpendingSection = document.querySelector(`${location}`);
-    totalSpendingSection.innerHTML = `Your Total Spending is $${totalSpentByCustomer}`;
+    totalSpendingSection.insertAdjacentHTML('beforeend', `<p id="spending-message">Total Spent $${totalSpentByCustomer}</p>`);
 }
 
 function fetchRoomData() {
@@ -418,9 +432,9 @@ function postBooking(dataToPost) {
 
 function displayManagerView() {
     toggleLoginPage(managerProfilePage);
-    roomsAvailableToday.classList.toggle('hidden');
-    revenueToday.classList.toggle('hidden');
-    roomOccupiedPercentage.classList.toggle('hidden');
+    roomsAvailableToday.classList.remove('hidden');
+    revenueToday.classList.remove('hidden');
+    roomOccupiedPercentage.classList.remove('hidden');
     roomsAvailableToday.innerHTML = `<p>Number Of Rooms Available Today</p><br>${displayRoomsAvailableToday()}`;
     displayTodaysTotalRevenue();
     roomOccupiedPercentage.innerHTML = `<p>Percentage Of Rooms Occupied Today</p><br>${displayRoomOccupiedPercentage()}`;
@@ -459,6 +473,7 @@ function displayRoomOccupiedPercentage() {
 
 function handleSearchForCustomer() {
     findCustomerByName()
+    managerSideBar.classList.toggle('hidden')
 }
 
 function findCustomerByName() {
@@ -479,6 +494,57 @@ function findCustomerByName() {
         upcomingBookingsTitle.innerText = `Upcoming Bookings For ${currentCustomer.name}`;
         previousBookingsTitle.innerText = `Previous Bookings For ${currentCustomer.name}`;
         userProfilePage.classList.remove('hidden');
-        managerSideBar.classList.toggle('hidden');
+        managerSideBar.classList.remove('hidden');
     }
+}
+
+function handleCustomerLogout() {
+    logout(userProfilePage);
+}
+
+function handleManagerLogout() {
+    customerLogoutButton.classList.add('hidden')
+    userProfilePage.classList.add('hidden')
+    logout(managerProfilePage);
+}
+
+function logout(user) {
+    toggleLoginPage(user);
+    //managerProfilePage.classList.add('hidden')
+    let spendingMessage = document.querySelector('#spending-message');
+    if (typeof(spendingMessage) === 'undefined') {
+        return;
+    } else if(spendingMessage === null) {
+        return;
+    } else {
+        spendingMessage.remove();
+    }
+}
+
+function deleteBookingFromApi(dataToDelete) {
+    fetch("https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings", {
+      method: 'DELETE',
+      headers: {
+  	'Content-Type': 'application/json'
+    },
+      body: {
+            "id": `${dataToDelete}`
+            }
+    })
+    .then(response => console.log(response))
+    //.then(message => console.log('booking was posted'))
+    .catch(error => console.log(error.message))
+}
+
+function handleDeleteBooking() {
+    const roomNumberToDelete = document.querySelector('#room-number-to-delete');
+    //console.log(roomNumberToDelete.value, "asdf")
+    const dateToDelete = document.querySelector('#date-to-delete');
+    let formattedDate = dateToDelete.value.replaceAll('-', '/');
+    const bookingToDelete = bookings.bookingsData.find(booking => {
+        //console.log(booking.roomNumber)
+        return booking.date === formattedDate && booking.roomNumber == roomNumberToDelete.value;
+    });
+    currentManager.deleteBookedRoom(currentCustomer, formattedDate);
+    //deleteBookingFromApi(bookingToDelete.id);
 }
