@@ -23,6 +23,9 @@ const managerLoginButton = document.querySelector('.manager-login-button');
 
 const customerLoginView = document.querySelector('.customer-login');
 const managerLoginView = document.querySelector('.manager-login');
+const customerLogoutButton = document.querySelector('#customer-logout-button');
+const managerLogoutButton = document.querySelector('#manager-logout-button');
+const customerSideBar = document.querySelector('.side-bar');
 
 const homepage = document.querySelector('.homepage');
 const userProfilePage = document.querySelector('.user-profile-page');
@@ -62,6 +65,8 @@ bookingButton.addEventListener('click', handleBooking);
 
 searchCustomerButton.addEventListener('click', handleSearchForCustomer);
 
+customerLogoutButton.addEventListener('click', handleCustomerLogout);
+managerLogoutButton.addEventListener('click', handleManagerLogout);
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ SCRIPTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 let currentCustomerId;
@@ -239,6 +244,10 @@ function displayUpcomingCustomerBookings(location) {
           const upcomingStay = allRooms.roomData.find(room => {
               return room.number === booking.roomNumber;
           })
+
+          if (typeof(upcomingStay) === 'undefined') {
+            return;
+          } else {
           const roomNumber = upcomingStay.number;
           const roomType = upcomingStay.roomType;
           const bedSize = upcomingStay.bedSize;
@@ -259,6 +268,7 @@ function displayUpcomingCustomerBookings(location) {
           bedCountSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bedQuantity}</li>`);
           roomCostSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">$${roomCost}</li>`);
           bidetSection.insertAdjacentHTML('beforeend', `<li style="list-style-type:none;">${bidetBoolean}</li>`);
+          }
       })
 }
 
@@ -273,7 +283,7 @@ function displayTotalSpentByCustomer(location) {
     }, 0)
 
     const totalSpendingSection = document.querySelector(`${location}`);
-    totalSpendingSection.innerHTML = `Your Total Spending is $${totalSpentByCustomer}`;
+    totalSpendingSection.insertAdjacentHTML('beforeend', `<p id="spending-message">Total Spent $${totalSpentByCustomer}</p>`);
 }
 
 function fetchRoomData() {
@@ -418,9 +428,9 @@ function postBooking(dataToPost) {
 
 function displayManagerView() {
     toggleLoginPage(managerProfilePage);
-    roomsAvailableToday.classList.toggle('hidden');
-    revenueToday.classList.toggle('hidden');
-    roomOccupiedPercentage.classList.toggle('hidden');
+    roomsAvailableToday.classList.remove('hidden');
+    revenueToday.classList.remove('hidden');
+    roomOccupiedPercentage.classList.remove('hidden');
     roomsAvailableToday.innerHTML = `<p>Number Of Rooms Available Today</p><br>${displayRoomsAvailableToday()}`;
     displayTodaysTotalRevenue();
     roomOccupiedPercentage.innerHTML = `<p>Percentage Of Rooms Occupied Today</p><br>${displayRoomOccupiedPercentage()}`;
@@ -479,6 +489,36 @@ function findCustomerByName() {
         upcomingBookingsTitle.innerText = `Upcoming Bookings For ${currentCustomer.name}`;
         previousBookingsTitle.innerText = `Previous Bookings For ${currentCustomer.name}`;
         userProfilePage.classList.remove('hidden');
-        managerSideBar.classList.toggle('hidden');
+        managerSideBar.classList.remove('hidden');
+    }
+}
+
+function handleCustomerLogout() {
+    logout(userProfilePage);
+}
+
+function handleManagerLogout() {
+    customerLogoutButton.classList.add('hidden')
+    // toggleLoginPage(managerProfilePage);
+    // toggleLoginPage(userProfilePage);
+    userProfilePage.classList.add('hidden')
+    //roomsAvailableToday.remove('hidden')
+    logout(managerProfilePage);
+
+    //managerProfilePage.remove('hidden')
+    //logout(userProfilePage)
+    
+}
+
+function logout(user) {
+    toggleLoginPage(user);
+    //managerProfilePage.classList.add('hidden')
+    let spendingMessage = document.querySelector('#spending-message');
+    if (typeof(spendingMessage) === 'undefined') {
+        return;
+    } else if(spendingMessage === null) {
+        return;
+    } else {
+        spendingMessage.remove();
     }
 }
