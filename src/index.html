@@ -101,7 +101,7 @@
               <option value="residential-suite">Residential Suite</option>
             </select>
             <button type="button" id="search-rooms-button">Search For Rooms</button>
-            <p class="error hidden" id="required-date-message">You Must Select A Valid Date</p>
+              <p class="error hidden" id="required-date-message">You Must Select A Valid Date</p>
           </form>
           <section class="user-card hidden" id="available-bookings-section">
             <h2>Available Rooms</h2>
@@ -134,8 +134,18 @@
           
         </section>
       </section>
-      <section id="manager-profile-page hidden">
-        
+      <section class="manager-profile-page hidden">
+        <section class="side-bar manager-side-bar">
+          <img src="./images/profile-pic.png" alt="grey photo of gray silhouette" height="150em" width="150em" class="sidebar-profile-pic">
+        </section>
+        <section class="middle-manager">
+          <section class="user-card manager-card hidden" id="rooms-available-today">
+          </section>
+          <section class="user-card manager-card hidden" id="room-occupied-percentage">
+          </section>
+          <section class="user-card manager-card hidden" id="revenue-today">
+          </section>
+        </section>
       </section>
     </main>
     <!-- Do not include the index.js or main.bundle.js file here - it is done automatically by the webpack server -->

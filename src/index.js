@@ -33,6 +33,11 @@ const userProfilePage = document.querySelector('.user-profile-page');
 const previousBookingsSection = document.querySelector('#previous-bookings');
 const futureBookingsSection = document.querySelector('#future-bookings');
 
+const managerProfilePage = document.querySelector('.manager-profile-page');
+const roomsAvailableToday = document.querySelector('#rooms-available-today');
+const revenueToday = document.querySelector('#revenue-today');
+const roomOccupiedPercentage = document.querySelector('#room-occupied-percentage');
+
 const upcomingBookingsButton = document.querySelector('#upcoming-bookings-button');
 const pastBookingsButton = document.querySelector('#past-bookings-button');
 
@@ -105,7 +110,7 @@ function handleUserLogin() {
 
 function handleManagerLogin() {
     if (verifyManagerUsername() && verifyPassword(managerPassword)) {
-        displayManagerDashboard();
+        displayManagerView();
         console.log("manager login success")
     } else {
         displayLoginErrorMessage(managerLoginButton);
@@ -180,16 +185,16 @@ function removeErrorMessage() {
 }
 
 function displayCustomerView() {
-    toggleLoginPage();
+    toggleLoginPage(userProfilePage);
     displayPastCustomerBookings();
     displayUpcomingCustomerBookings();
     displayTotalSpentByCustomer();
 }
 
-function toggleLoginPage() {
+function toggleLoginPage(user) {
     heading.classList.toggle('hidden');
     homepage.classList.toggle('hidden');
-    userProfilePage.classList.toggle('hidden');
+    user.classList.toggle('hidden');
 }
 
 function displayPastCustomerBookings() {
@@ -434,11 +439,63 @@ function postBooking(dataToPost) {
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ Manager Dashboard ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function displayManagerDashboard() {
-    const managerDashboard = document.querySelector('#manager-profile-page');
-    managerDashboard.classList.toggle('hidden');
+function displayManagerView() {
+    //const managerDashboard = document.querySelector('#manager-profile-page');
+    //managerProfilePage.classList.toggle('hidden');
+    toggleLoginPage(managerProfilePage);
+    const managerSideBar = document.querySelector('.manager-side-bar');
+    //managerSideBar.classList.toggle('hidden');
+    //const middleSection = document.querySelectorAll('.manager-card');
+    roomsAvailableToday.classList.toggle('hidden');
+    revenueToday.classList.toggle('hidden');
+    roomOccupiedPercentage.classList.toggle('hidden');
+    roomsAvailableToday.innerHTML = `<p>Number Of Rooms Available Today</p><br>${displayRoomsAvailableToday()}`;
+    displayTodaysTotalRevenue();
+    roomOccupiedPercentage.innerHTML = `<p>Percentage Of Rooms Occupied Today</p><br>${displayRoomOccupiedPercentage()}`;
 }
 
+function displayRoomsAvailableToday() {
+    // let unformattedDate = currentDate.toISOString().substring(0, 10);
+    // global.currentDate = unformattedDate.replaceAll('-', '/');
+    let availableRooms = allRooms.roomData.filter(room => {
+        let roomAvailable = true;
+        bookings.bookingsData.forEach(booking => {
+            if (booking.date === currentDate && booking.roomNumber === room.number) {
+                roomAvailable = false;
+            }
+        })
+        return roomAvailable;
+        // iterate through all of the roomsData
+        // then iterate through the bookingsData
+        // if we find any booking where the booking.date === currentdate && booking.roomnumber === room.Number
+        // set roomAvailable = false;
+        // return the roomAvailable
+    })
+    return availableRooms.length;
+}
+
+function displayTodaysTotalRevenue() {
+    //let unformattedDate = currentDate.toISOString().substring(0, 10);
+    //currentDate = unformattedDate.replaceAll('-', '/');
+    let todaysRevenue = bookings.bookingsData.reduce((totalRevenue, booking) => {
+        // iterate through our bookings
+        //iterate through our rooms 
+        // if todays date === booking.date
+        // add the cost of the room to our total revenue
+        allRooms.roomData.forEach(room => {
+            if (currentDate === booking.date) {
+                totalRevenue += room.costPerNight 
+            }
+        })
+        return totalRevenue;
+    }, 0);
+    const todaysRevenueSection = document.querySelector('#revenue-today');
+    todaysRevenueSection.innerHTML = `<p>Today's Total Revenue</p><br>$${todaysRevenue}`;
+}
+
+function displayRoomOccupiedPercentage() {
+    return displayRoomsAvailableToday()/ allRooms.roomData.length;
+}
     //Should have a userData class 
     // should have a dataStorage
     // should be able to load users api data to dataStorage ***
