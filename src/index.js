@@ -2,6 +2,7 @@ import Bookings from './Bookings';
 import './css/base.scss';
 import Customer from './Customer';
 
+import './images/man-watching-sunset-grand-canyon.jpg'
 import './images/turing-logo.png';
 import './images/profile-pic.png';
 import Room from './Room';
@@ -37,6 +38,7 @@ const managerSideBar = document.querySelector('.manager-side-bar');
 const roomsAvailableToday = document.querySelector('#rooms-available-today');
 const revenueToday = document.querySelector('#revenue-today');
 const roomOccupiedPercentage = document.querySelector('#room-occupied-percentage');
+const deleteBookingButton = document.querySelector('#delete-booking-button');
 
 const upcomingBookingsButton = document.querySelector('#upcoming-bookings-button');
 const pastBookingsButton = document.querySelector('#past-bookings-button');
@@ -67,6 +69,8 @@ searchCustomerButton.addEventListener('click', handleSearchForCustomer);
 
 customerLogoutButton.addEventListener('click', handleCustomerLogout);
 managerLogoutButton.addEventListener('click', handleManagerLogout);
+
+deleteBookingButton.addEventListener('click', handleDeleteBooking);
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ SCRIPTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 let currentCustomerId;
@@ -469,6 +473,7 @@ function displayRoomOccupiedPercentage() {
 
 function handleSearchForCustomer() {
     findCustomerByName()
+    managerSideBar.classList.toggle('hidden')
 }
 
 function findCustomerByName() {
@@ -499,15 +504,8 @@ function handleCustomerLogout() {
 
 function handleManagerLogout() {
     customerLogoutButton.classList.add('hidden')
-    // toggleLoginPage(managerProfilePage);
-    // toggleLoginPage(userProfilePage);
     userProfilePage.classList.add('hidden')
-    //roomsAvailableToday.remove('hidden')
     logout(managerProfilePage);
-
-    //managerProfilePage.remove('hidden')
-    //logout(userProfilePage)
-    
 }
 
 function logout(user) {
@@ -521,4 +519,32 @@ function logout(user) {
     } else {
         spendingMessage.remove();
     }
+}
+
+function deleteBookingFromApi(dataToDelete) {
+    fetch("https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings", {
+      method: 'DELETE',
+      headers: {
+  	'Content-Type': 'application/json'
+    },
+      body: {
+            "id": `${dataToDelete}`
+            }
+    })
+    .then(response => console.log(response))
+    //.then(message => console.log('booking was posted'))
+    .catch(error => console.log(error.message))
+}
+
+function handleDeleteBooking() {
+    const roomNumberToDelete = document.querySelector('#room-number-to-delete');
+    //console.log(roomNumberToDelete.value, "asdf")
+    const dateToDelete = document.querySelector('#date-to-delete');
+    let formattedDate = dateToDelete.value.replaceAll('-', '/');
+    const bookingToDelete = bookings.bookingsData.find(booking => {
+        //console.log(booking.roomNumber)
+        return booking.date === formattedDate && booking.roomNumber == roomNumberToDelete.value;
+    });
+    currentManager.deleteBookedRoom(currentCustomer, formattedDate);
+    //deleteBookingFromApi(bookingToDelete.id);
 }

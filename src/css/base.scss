@@ -1,4 +1,4 @@
-$primary-background: white;
+//$primary-background: ;
 $homepage-background: #048A81;
 
 * {
@@ -6,7 +6,8 @@ $homepage-background: #048A81;
 }
 
 body {
-  background: $primary-background;
+  background-image: url('../images/man-watching-sunset-grand-canyon.jpg');
+  //background: $primary-background;
 }
 
 title {
