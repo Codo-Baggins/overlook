@@ -8,13 +8,21 @@ class User {
 
   bookRoom(potentialBooking, bookingsList) {
     let alreadyBooked;
-    bookingsList.forEach(booking => {
+    bookingsList.forEach((booking) => {
       alreadyBooked = false;
-      console.log(booking.roomNumber, potentialBooking.roomNumber, booking.date, potentialBooking.date)
-      if (booking.roomNumber === potentialBooking.roomNumber && booking.date == potentialBooking.date) {
+      console.log(
+        booking.roomNumber,
+        potentialBooking.roomNumber,
+        booking.date,
+        potentialBooking.date
+      );
+      if (
+        booking.roomNumber === potentialBooking.roomNumber &&
+        booking.date == potentialBooking.date
+      ) {
         alreadyBooked = true;
-        console.log("qwoeifnaweoiwqe")
-      } 
+        console.log("qwoeifnaweoiwqe");
+      }
     });
     if (alreadyBooked === true) {
       console.log("Your room has already been booked");

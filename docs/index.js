@@ -26,7 +26,6 @@ const customerLoginView = document.querySelector('.customer-login');
 const managerLoginView = document.querySelector('.manager-login');
 const customerLogoutButton = document.querySelector('#customer-logout-button');
 const managerLogoutButton = document.querySelector('#manager-logout-button');
-const customerSideBar = document.querySelector('.side-bar');
 
 const homepage = document.querySelector('.homepage');
 const userProfilePage = document.querySelector('.user-profile-page');
@@ -92,7 +91,7 @@ function fetchAllCustomers() {
 function fetchAllBookings() {
     fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings')
     .then(response => response.json())
-    .then(data => loadAllBookings(data.bookings))
+    .then(data => {console.log({data}); loadAllBookings(data.bookings)})
     .catch(error => console.log(error.message));
 }
 
@@ -252,6 +251,7 @@ function displayUpcomingCustomerBookings(location) {
           if (typeof(upcomingStay) === 'undefined') {
             return;
           } else {
+              console.log({upcomingStay})
           const roomNumber = upcomingStay.number;
           const roomType = upcomingStay.roomType;
           const bedSize = upcomingStay.bedSize;
@@ -298,6 +298,7 @@ function fetchRoomData() {
 }
 
 function loadAllRoomData(allRoomData) {
+    console.log({allRoomData})
     global.allRooms = new Room(allRoomData);
     allRooms.sortRoomsByType(); 
 }
@@ -479,7 +480,7 @@ function handleSearchForCustomer() {
 function findCustomerByName() {
     const customerSearchField = document.querySelector('#customer-search-field');
     const queriedCustomer = currentManager.searchForCustomer(customerSearchField.value, userRepo.customers)
-    if (typeof(queriedCustomer) === "undefined") {
+    if (!queriedCustomer) {
         let unidentifiedUserMessage = document.querySelector('#unidentified-user-message');
         unidentifiedUserMessage.classList.toggle('hidden');
         setTimeout(() => {unidentifiedUserMessage.classList.toggle('hidden')}, 3000);
@@ -521,15 +522,13 @@ function logout(user) {
     }
 }
 
-function deleteBookingFromApi(dataToDelete) {
+function deleteBookingFromApi(id) {
     fetch("https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings", {
-      method: 'DELETE',
-      headers: {
-  	'Content-Type': 'application/json'
-    },
-      body: {
-            "id": `${dataToDelete}`
-            }
+        method: 'DELETE',
+        headers: {
+  	        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({id})
     })
     .then(response => console.log(response))
     //.then(message => console.log('booking was posted'))
@@ -538,11 +537,9 @@ function deleteBookingFromApi(dataToDelete) {
 
 function handleDeleteBooking() {
     const roomNumberToDelete = document.querySelector('#room-number-to-delete');
-    //console.log(roomNumberToDelete.value, "asdf")
     const dateToDelete = document.querySelector('#date-to-delete');
     let formattedDate = dateToDelete.value.replaceAll('-', '/');
     const bookingToDelete = bookings.bookingsData.find(booking => {
-        //console.log(booking.roomNumber)
         return booking.date === formattedDate && booking.roomNumber == roomNumberToDelete.value;
     });
     currentManager.deleteBookedRoom(currentCustomer, formattedDate);

@@ -16,8 +16,8 @@
         <div class="customer-login tab">
           <span id="welcome-message">Welcome Customer!</span>
           <form class="inputs tabcontent">
-            Username:<input class="login username" id="customer-username-input" type="text" required><br>
-            Password:<input class="login password" id="customer-password-input"type="text" required><br>
+            Username:<input aria-label="customer-username-input-field" class="login username" id="customer-username-input" type="text" required><br>
+            Password:<input aria-label="customer-password-input-field"class="login password" id="customer-password-input"type="text" required><br>
             <button type="button" class="user-login-button">Login</button>
             <br>
           </form>
@@ -26,9 +26,9 @@
           <!-- <button class="tablinks">Customer Login</button>
           <button class="tablinks">Manager Login</button> -->
             <span id="welcome-message">Welcome Management!</span>
-            <form class="inputs tabcontent">
-              Username:<input class="login username" id="manager-username-input" type="text" required><br>
-              Password:<input class="login password" id="manager-password-input" type="text" required><br>
+            <form aria-label="login-window" class="inputs tabcontent">
+              Username:<input aria-label="manager-username-input-field" class="login username" id="manager-username-input" type="text" required><br>
+              Password:<input aria-label="manager-password-input-field" class="login password" id="manager-password-input" type="text" required><br>
               <button type="button" class="manager-login-button">Login</button>
               <br>
             </form>
@@ -93,7 +93,7 @@
                 <p>Bidet?</p>
               </ul>
           </section>
-          <form class="book-room">
+          <form aria-label="book-room-form" class="book-room">
             <p>Need To Book A Room?</p>
             <input id="date-picker" type="date" max="2025-12-31" required>
             <select type="dropdown" id="room-filter-dropdown"> 
@@ -144,7 +144,7 @@
         </section>
           <div id="style">
           <p>Remove A Booking</p>
-          <form>
+          <form aria-label="delete-booking-form">
             <!-- <p>Select A Date And Room Number To Delete A Booking</p> -->
             <input id="date-to-delete" type="date">
             <input id="room-number-to-delete" placeholder="Room Number">
@@ -158,7 +158,7 @@
             <section class="user-card manager-card hidden" id="revenue-today">
             </section>
           </section>
-          <form id="search-customer-form">
+          <form aria-label="customer-search-form" id="search-customer-form">
             <input id="customer-search-field" placeholder="Search for customer">
             <button id="search-customer-button" type="button">Search For Customer</button>
               <p class="error hidden" id="unidentified-user-message">Customer Not Found. Please Enter A Valid Customer</p>
