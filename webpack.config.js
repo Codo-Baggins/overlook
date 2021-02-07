@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const loader = require("sass-loader");
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./docs/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "main.bundle.js",

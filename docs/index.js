@@ -1,5 +1,5 @@
 import Bookings from "./Bookings";
-import "./css/base.css";
+import "./css/base.scss";
 import Customer from "./Customer";
 
 import "./images/man-watching-sunset-grand-canyon.jpg";
